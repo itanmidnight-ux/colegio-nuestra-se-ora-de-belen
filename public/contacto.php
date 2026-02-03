@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once "../config.php";
 
 $success = "";
@@ -52,7 +52,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
 </head>
 <body>
   <a class="corner-logo" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.png" alt="Escudo Institucional">
+    <img src="escudo.jpeg" alt="Escudo Institucional">
   </a>
 
   <header class="public-header" id="inicio">
@@ -75,14 +75,15 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       <div class="hero-grid">
         <div class="hero-text">
           <p class="hero-kicker">Canales oficiales</p>
-          <h1 id="contact-title">Ponte en contacto con nuestra institución</h1>
-          <p class="hero-lead">Recibimos dudas, propuestas de colaboración e ideas para mejorar el proyecto institucional.</p>
+          <h1 id="contact-title">Conecta con la comunidad Colnubelen</h1>
+          <p class="hero-lead">Te acompañamos con atención oportuna y orientación académica. Escríbenos para resolver dudas, proponer proyectos o coordinar visitas institucionales.</p>
         </div>
         <div class="hero-media">
           <div class="hero-card anim-card" style="--delay: 0.1s">
             <h2>Atención al público</h2>
-            <p>Horario de atención: 6075920077</p>
+            <p>Teléfono: 6075920077</p>
             <p>Correo institucional: colnubelen@semcucuta.gov.co</p>
+            <p>Dirección: Calle 26 No. 27-60, Barrio Belén</p>
           </div>
         </div>
       </div>
@@ -93,39 +94,58 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         <h2 id="contact-info-title">Formas de contacto</h2>
         <p>Selecciona el canal más conveniente para tu solicitud.</p>
       </div>
+      <div class="contact-details">
+        <article class="detail-card anim-card" style="--delay: 0.05s">
+          <h4>Sede principal</h4>
+          <p>Calle 26 No. 27-60, Barrio Belén.</p>
+          <p>Cúcuta - Norte de Santander.</p>
+        </article>
+        <article class="detail-card anim-card" style="--delay: 0.1s">
+          <h4>Horario de atención</h4>
+          <p>Jornada mañana, tarde y única.</p>
+          <p>Atención a acudientes y comunidad educativa.</p>
+        </article>
+        <article class="detail-card anim-card" style="--delay: 0.15s">
+          <h4>Correo institucional</h4>
+          <p>colnubelen@semcucuta.gov.co</p>
+          <p>Respuesta en 24 a 72 horas.</p>
+        </article>
+      </div>
       <div class="contact-grid">
-        <article class="contact-card anim-card" style="--delay: 0.05s">
+        <article class="contact-card anim-card" style="--delay: 0.2s">
           <img src="https://www.colnubelen.edu.co/images/botones/c1.png" alt="Canal institucional">
           <h3>Canal institucional</h3>
           <p>Institución Educativa Colegio Nuestra Señora de Belén</p>
-          <p>Cúcuta - Norte Santander</p>
         </article>
-        <article class="contact-card anim-card" style="--delay: 0.1s">
+        <article class="contact-card anim-card" style="--delay: 0.25s">
           <img src="https://www.colnubelen.edu.co/images/botones/e1.png" alt="Correo institucional">
           <h3>Correo electrónico</h3>
           <p>colnubelen@semcucuta.gov.co</p>
         </article>
-        <article class="contact-card anim-card" style="--delay: 0.15s">
+        <article class="contact-card anim-card" style="--delay: 0.3s">
           <img src="https://www.colnubelen.edu.co/images/botones/p1.png" alt="Atención al público">
           <h3>Atención al público</h3>
-          <p>Horario de atención: 6075920077</p>
+          <p>Teléfono: 6075920077</p>
         </article>
-        <article class="contact-card anim-card" style="--delay: 0.2s">
+        <article class="contact-card anim-card" style="--delay: 0.35s">
           <img src="https://www.colnubelen.edu.co/images/botones/c1.png" alt="Rectoría">
-          <h3>Rectora</h3>
-          <p>CARLOS LUIS VILLAMIZAR RAMIREZ</p>
+          <h3>Rectoría</h3>
+          <p>Carlos Luis Villamizar Ramírez</p>
         </article>
       </div>
 
       <div class="contact-shell">
-        <div class="contact-panel anim-card" style="--delay: 0.25s">
+        <div class="contact-panel anim-card" style="--delay: 0.4s">
           <h3>Gestión de solicitudes</h3>
           <p>Escribe tu consulta o propuesta y nuestro equipo académico te responderá a través de los canales oficiales.</p>
           <ul>
             <li>Tiempo de respuesta: 24 a 72 horas</li>
-            <li>Horario de atención: 6075920077</li>
+            <li>Horario de atención: Jornada mañana, tarde y única</li>
             <li>Correo: colnubelen@semcucuta.gov.co</li>
           </ul>
+          <div class="contact-map" aria-hidden="true">
+            <iframe src="https://www.google.com/maps?q=Calle%2026%20No.%2027-60%20Barrio%20Bel%C3%A9n%20C%C3%BAcuta&output=embed" title="Mapa Institución Educativa Nuestra Señora de Belén"></iframe>
+          </div>
         </div>
         <form class="contact-form" method="post" action="contacto.php" id="contacto-form">
           <?php if (!empty($success)): ?>
@@ -179,13 +199,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z"></path><circle cx="12" cy="11" r="2.5"></circle></svg>
             </span>
-            Cúcuta - Norte Santander
+            Cúcuta - Norte de Santander
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M4 20c1.5-3 4-5 8-5s6.5 2 8 5"></path></svg>
             </span>
-            Rectora: CARLOS LUIS VILLAMIZAR RAMIREZ
+            Rector: Carlos Luis Villamizar Ramírez
           </li>
         </ul>
         <div class="footer-social">
@@ -201,7 +221,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
             </span>
-            Horario de atención:
+            Horario de atención: Jornada mañana, tarde y única
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
@@ -213,7 +233,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
             </span>
-            colnubelen@semcucuta.gov.co
+            <button class="btn-outline" type="button" data-open-modal="correoModal">colnubelen@semcucuta.gov.co</button>
           </li>
         </ul>
         <div class="footer-clock">
@@ -222,19 +242,30 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         </div>
       </div>
       <div class="footer-col">
-        <h4>Enviar correo con:</h4>
-        <div class="footer-links">
-          <a href="https://mail.google.com/" target="_blank" rel="noreferrer">Gmail</a>
-          <a href="https://outlook.live.com/" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
-        </div>
+        <h4>Enlaces útiles</h4>
         <div class="footer-links">
           <a href="https://www.webcolegios.com/" target="_blank" rel="noreferrer">[webcolegios]</a>
           <a href="https://www.colnubelen.edu.co/" target="_blank" rel="noreferrer">[Mapa de Sitio]</a>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.colnubelen.edu.co/sedes.php" target="_blank" rel="noreferrer">Sedes</a>
+          <a href="https://www.colnubelen.edu.co/pqr.php" target="_blank" rel="noreferrer">PQRS</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">© 2026 - Desarrollada por webcolegios | Institución Educativa Nuestra Señora de Belén</div>
   </footer>
+
+  <div class="footer-modal" id="correoModal" aria-hidden="true">
+    <div class="footer-modal-content">
+      <h3>📩 Enviar correo con:</h3>
+      <div class="footer-modal-actions">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Gmail</a>
+        <a href="https://outlook.live.com/owa/?path=/mail/action/compose&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
+      </div>
+      <button class="footer-modal-close" type="button" data-close-modal>Cerrar</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
