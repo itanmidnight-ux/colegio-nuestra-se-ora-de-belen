@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once "../config.php";
 
 if (!isset($_GET['id'])) {
@@ -46,7 +46,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
 </head>
 <body class="pdf-viewer-page">
   <a class="corner-logo" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.png" alt="Escudo Institucional">
+    <img src="escudo.jpeg" alt="Escudo Institucional">
   </a>
 
   <header class="public-header">
@@ -67,7 +67,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <main class="public-content" id="main-content">
     <aside class="side-panel periodicos-panel" id="periodicosPanel">
       <button class="toggle-button" id="togglePeriodicosBtn" aria-label="Mostrar u ocultar ediciones">&lt;</button>
-      <h3>Ediciones Anteriores</h3>
+      <h3>Ediciones anteriores</h3>
       <div class="listado">
         <?php
         if (count($periodicos_array) > 0) {
@@ -88,8 +88,17 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
     </aside>
 
     <section class="main-periodico-display">
-      <h2><?php echo htmlspecialchars($periodico_principal['titulo']); ?></h2>
-      <p>Fecha: <?php echo htmlspecialchars($periodico_principal['publicado_en']); ?> | Dir: <?php echo htmlspecialchars($periodico_principal['director']); ?></p>
+      <div class="periodico-header">
+        <div class="periodico-meta">
+          <h2><?php echo htmlspecialchars($periodico_principal['titulo']); ?></h2>
+          <span>Fecha: <?php echo htmlspecialchars($periodico_principal['publicado_en']); ?></span>
+          <span>Director: <?php echo htmlspecialchars($periodico_principal['director']); ?></span>
+        </div>
+        <div class="periodico-actions-inline">
+          <a class="btn-primary" href="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>" download>Descargar edición</a>
+          <a class="btn-outline" href="periodicos.php">Volver al archivo</a>
+        </div>
+      </div>
 
       <div class="pdf-container">
         <iframe src="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>" frameborder="0"></iframe>
@@ -144,13 +153,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z"></path><circle cx="12" cy="11" r="2.5"></circle></svg>
             </span>
-            Cúcuta - Norte Santander
+            Cúcuta - Norte de Santander
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M4 20c1.5-3 4-5 8-5s6.5 2 8 5"></path></svg>
             </span>
-            Rectora: CARLOS LUIS VILLAMIZAR RAMIREZ
+            Rector: Carlos Luis Villamizar Ramírez
           </li>
         </ul>
         <div class="footer-social">
@@ -166,7 +175,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
             </span>
-            Horario de atención:
+            Horario de atención: Jornada mañana, tarde y única
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
@@ -178,7 +187,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
             </span>
-            colnubelen@semcucuta.gov.co
+            <button class="btn-outline" type="button" data-open-modal="correoModal">colnubelen@semcucuta.gov.co</button>
           </li>
         </ul>
         <div class="footer-clock">
@@ -187,19 +196,30 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         </div>
       </div>
       <div class="footer-col">
-        <h4>Enviar correo con:</h4>
-        <div class="footer-links">
-          <a href="https://mail.google.com/" target="_blank" rel="noreferrer">Gmail</a>
-          <a href="https://outlook.live.com/" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
-        </div>
+        <h4>Enlaces útiles</h4>
         <div class="footer-links">
           <a href="https://www.webcolegios.com/" target="_blank" rel="noreferrer">[webcolegios]</a>
           <a href="https://www.colnubelen.edu.co/" target="_blank" rel="noreferrer">[Mapa de Sitio]</a>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.colnubelen.edu.co/sedes.php" target="_blank" rel="noreferrer">Sedes</a>
+          <a href="https://www.colnubelen.edu.co/pqr.php" target="_blank" rel="noreferrer">PQRS</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">© 2026 - Desarrollada por webcolegios | Institución Educativa Nuestra Señora de Belén</div>
   </footer>
+
+  <div class="footer-modal" id="correoModal" aria-hidden="true">
+    <div class="footer-modal-content">
+      <h3>📩 Enviar correo con:</h3>
+      <div class="footer-modal-actions">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Gmail</a>
+        <a href="https://outlook.live.com/owa/?path=/mail/action/compose&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
+      </div>
+      <button class="footer-modal-close" type="button" data-close-modal>Cerrar</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

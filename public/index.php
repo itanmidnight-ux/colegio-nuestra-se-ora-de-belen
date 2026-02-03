@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once "../config.php";
 
 $sql = "SELECT id, titulo, director, publicado_en, archivo_pdf FROM periodicos ORDER BY publicado_en DESC";
@@ -21,14 +21,14 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>ECO BELÉN - Periódicos Escolares</title>
+  <title>Institución Educativa Nuestra Señora de Belén</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="style.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <a class="corner-logo" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.png" alt="Escudo Institucional">
+    <img src="escudo.jpeg" alt="Escudo Institucional">
   </a>
 
   <header class="public-header" id="inicio">
@@ -36,12 +36,12 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
     <div class="header-inner">
       <div class="brand-text">
         <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
-        <span class="brand-sub">ECO BELÉN · Periódicos escolares</span>
+        <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
       </div>
       <nav class="main-nav">
         <a href="#inicio">Inicio</a>
         <a href="#institucion">Institución</a>
-        <a href="#mision-vision">Misión y visión</a>
+        <a href="#sedes">Sedes</a>
         <a href="periodicos.php">Periódicos</a>
         <a href="contacto.php">Contacto</a>
       </nav>
@@ -53,107 +53,96 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       <div class="hero-grid">
         <div class="hero-text">
           <p class="hero-kicker">Institución Pública · Mixta · Cúcuta</p>
-          <h1 id="hero-title">Institución Educativa Nuestra Señora de Belén</h1>
-          <p class="hero-lead">Formamos estudiantes con sentido humano, vocación de servicio y competencias para transformar su entorno con responsabilidad, ciencia y valores.</p>
+          <h1 id="hero-title">Bienvenidos a la Institución Educativa Nuestra Señora de Belén</h1>
+          <p class="hero-lead">Somos una comunidad educativa que impulsa la ciencia, la convivencia y el servicio. Acompañamos a nuestros estudiantes desde la primera infancia hasta la media técnica para transformar el entorno con valores y excelencia.</p>
           <div class="hero-actions">
-            <a class="btn-primary" href="periodicos.php">Ver periódicos</a>
-            <a class="btn-outline" href="contacto.php">Contáctanos</a>
+            <a class="btn-primary" href="periodicos.php">Explorar periódicos</a>
+            <a class="btn-outline" href="contacto.php">Agenda una visita</a>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric-card">
+              <h3>Naturaleza</h3>
+              <p>Pública</p>
+            </div>
+            <div class="metric-card">
+              <h3>Población</h3>
+              <p>Mixta</p>
+            </div>
+            <div class="metric-card">
+              <h3>Jornada</h3>
+              <p>Mañana · Tarde · Única</p>
+            </div>
           </div>
         </div>
         <div class="hero-media">
           <div class="hero-card anim-card" style="--delay: 0.1s">
             <h2>Identidad institucional</h2>
-            <p>Una comunidad educativa que promueve la ciencia, la paz y el progreso como pilares de su formación integral.</p>
+            <p>Formamos niños y jóvenes con principios éticos, sociales y culturales, apoyados en la ciencia y la tecnología, para impulsar su crecimiento personal y social.</p>
             <div class="tag-list">
               <span>Excelencia</span>
-              <span>Convivencia</span>
               <span>Innovación</span>
+              <span>Convivencia</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="panel-section" id="institucion" aria-labelledby="institucion-title">
+    <section class="spotlight-section" id="institucion" aria-labelledby="institucion-title">
       <div class="section-header">
-        <h2 id="institucion-title">Nuestra Institución</h2>
-        <p>Datos generales de la sede principal y características institucionales.</p>
+        <h2 id="institucion-title">Nuestra institución</h2>
+        <p>Inspirados en la identidad Colnubelen, fortalecemos la formación académica y humana con una visión futurista.</p>
       </div>
-      <div class="panel-grid">
-        <article class="panel-card anim-card" style="--delay: 0.05s">
-          <h3>Sede Principal</h3>
+      <div class="spotlight-grid">
+        <article class="spotlight-card anim-card" style="--delay: 0.05s">
+          <h3>Sede principal</h3>
           <ul class="info-list">
             <li><strong>Dirección:</strong> Calle 26 No. 27-60, Barrio Belén.</li>
             <li><strong>Municipio:</strong> Cúcuta - Norte de Santander.</li>
-            <li><strong>Naturaleza:</strong> Pública.</li>
-            <li><strong>Población:</strong> Mixto.</li>
             <li><strong>Niveles:</strong> Primera infancia, básica primaria, básica secundaria, media académica, media técnica y aceleración del aprendizaje.</li>
-            <li><strong>Jornada de trabajo:</strong> Mañana - Tarde - Única.</li>
-            <li><strong>Rectora:</strong> CARLOS LUIS VILLAMIZAR RAMIREZ.</li>
+            <li><strong>Rector:</strong> Carlos Luis Villamizar Ramírez.</li>
           </ul>
         </article>
-        <article class="panel-card anim-card" style="--delay: 0.1s">
-          <div class="panel-illustration" aria-hidden="true"></div>
-          <div>
-            <h3>Atención al público y sedes</h3>
-            <p>Información de contacto y ubicación de las sedes principales con canales oficiales de comunicación.</p>
-            <div class="panel-tags">
-              <span>Secretaría</span>
-              <span>Atención al público</span>
-              <span>Sedes</span>
-            </div>
+        <article class="spotlight-card anim-card" style="--delay: 0.1s">
+          <h3>Horizonte institucional</h3>
+          <div class="spotlight-highlight">
+            <p>Ser líderes en formación académica y técnica, con valores humanos sólidos y crecimiento cualitativo de la comunidad educativa, apoyados en ciencia, cultura y tecnología.</p>
           </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="attention-section" aria-labelledby="attention-title">
-      <div class="section-header">
-        <h2 id="attention-title">Atención al Público</h2>
-        <p>Información institucional organizada para facilitar la comunicación.</p>
-      </div>
-      <div class="attention-grid">
-        <article class="attention-card card-blue anim-card" style="--delay: 0.05s">
-          <h3>Líneas de atención</h3>
-          <ul class="attention-list">
-            <li>Teléfono: 6075920077</li>
-            <li>Correo: colnubelen@semcucuta.gov.co</li>
-            <li>Secretaría: Calle 26 No. 27-60</li>
-          </ul>
-        </article>
-        <article class="attention-card card-light anim-card" style="--delay: 0.1s">
-          <h3>Institución Educativa</h3>
-          <p>Comprometida con la calidad académica, la convivencia y la formación integral de nuestros estudiantes.</p>
           <div class="panel-tags">
-            <span>#SomosColnubelen</span>
+            <span>Calidad</span>
+            <span>Servicio</span>
             <span>Identidad</span>
           </div>
         </article>
-        <article class="attention-card card-red anim-card" style="--delay: 0.15s">
-          <h3>Ubicaciones</h3>
-          <ul class="attention-list">
-            <li><span>Sede Principal:</span> Calle 26 No. 27-60</li>
-            <li><span>Belén No. 23:</span> Calle 25 #27-40</li>
-            <li><span>Belén No. 21:</span> Calle 25 #27-10</li>
-            <li><span>Rudesindo Soto:</span> AV 30 #17-22</li>
-          </ul>
+        <article class="spotlight-card anim-card" style="--delay: 0.15s">
+          <h3>Símbolos institucionales</h3>
+          <p>Conoce los elementos que representan nuestra historia y visión en la comunidad educativa Colnubelen.</p>
+          <a class="btn-outline" href="https://www.colnubelen.edu.co/simbolos.php" target="_blank" rel="noreferrer">Ver símbolos</a>
         </article>
       </div>
     </section>
 
-    <section class="mv-section" id="mision-vision" aria-labelledby="mv-title">
+    <section class="sedes-section" id="sedes" aria-labelledby="sedes-title">
       <div class="section-header">
-        <h2 id="mv-title">Misión y Visión</h2>
-        <p>Horizonte institucional que orienta nuestros procesos formativos.</p>
+        <h2 id="sedes-title">Sedes educativas</h2>
+        <p>Presencia estratégica para acompañar a nuestras familias en diferentes sectores de Cúcuta.</p>
       </div>
-      <div class="mv-grid">
-        <article class="mv-card anim-card" style="--delay: 0.05s">
-          <h3>Misión</h3>
-          <p>Formar niños y jóvenes con principios éticos, sociales y culturales, apoyados en la ciencia y la tecnología, para impulsar su crecimiento personal y social.</p>
+      <div class="sedes-grid">
+        <article class="sede-card anim-card" style="--delay: 0.05s">
+          <h4>Sede principal</h4>
+          <p>Calle 26 No. 27-60, Barrio Belén.</p>
         </article>
-        <article class="mv-card anim-card" style="--delay: 0.1s">
-          <h3>Visión</h3>
-          <p>Ser líderes en formación académica y técnica, con valores humanos sólidos y crecimiento cualitativo de la comunidad educativa, apoyados en ciencia, cultura y tecnología.</p>
+        <article class="sede-card anim-card" style="--delay: 0.1s">
+          <h4>Belén No. 23</h4>
+          <p>Calle 25 #27-40.</p>
+        </article>
+        <article class="sede-card anim-card" style="--delay: 0.15s">
+          <h4>Belén No. 21</h4>
+          <p>Calle 25 #27-10.</p>
+        </article>
+        <article class="sede-card anim-card" style="--delay: 0.2s">
+          <h4>Rudesindo Soto</h4>
+          <p>AV 30 #17-22.</p>
         </article>
       </div>
     </section>
@@ -161,7 +150,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
     <section class="services-section" aria-labelledby="services-title">
       <div class="section-header">
         <h2 id="services-title">Canales institucionales</h2>
-        <p>Accesos rápidos a servicios y procesos académicos.</p>
+        <p>Accede a los servicios que acompañan la vida escolar y el bienestar de la comunidad.</p>
       </div>
       <div class="services-grid">
         <div class="service-card anim-card" style="--delay: 0.05s">
@@ -181,16 +170,21 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
 
     <section class="avisos-section" aria-labelledby="avisos-title">
       <div class="section-header">
-        <h2 id="avisos-title">Avisos Importantes</h2>
+        <h2 id="avisos-title">Avisos importantes</h2>
         <p>Mensajes de interés para estudiantes, familias y comunidad educativa.</p>
       </div>
-      <div class="avisos-card anim-card" style="--delay: 0.05s">Mensajes de interés</div>
+      <div class="avisos-card anim-card" style="--delay: 0.05s">
+        <p>Consulta los comunicados vigentes y mantente informado sobre actividades académicas y culturales.</p>
+        <div class="contact-map" style="margin-top: 16px;">
+          <iframe src="https://www.webcolegios.com/mensaje_principal.php?idcolegio=8" title="Mensajes de interés"></iframe>
+        </div>
+      </div>
     </section>
 
     <section class="periodicos-section" id="periodicos" aria-labelledby="periodicos-title">
       <div class="section-header">
         <h2 id="periodicos-title">Último periódico publicado</h2>
-        <p>Acceso rápido a la edición más reciente.</p>
+        <p>Acceso rápido a la edición más reciente de ECO BELÉN.</p>
       </div>
 
       <div class="periodicos-ultima">
@@ -231,13 +225,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z"></path><circle cx="12" cy="11" r="2.5"></circle></svg>
             </span>
-            Cúcuta - Norte Santander
+            Cúcuta - Norte de Santander
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M4 20c1.5-3 4-5 8-5s6.5 2 8 5"></path></svg>
             </span>
-            Rectora: CARLOS LUIS VILLAMIZAR RAMIREZ
+            Rector: Carlos Luis Villamizar Ramírez
           </li>
         </ul>
         <div class="footer-social">
@@ -253,7 +247,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
             </span>
-            Horario de atención:
+            Horario de atención: Jornada mañana, tarde y única
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
@@ -265,7 +259,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
             </span>
-            colnubelen@semcucuta.gov.co
+            <button class="btn-outline" type="button" data-open-modal="correoModal">colnubelen@semcucuta.gov.co</button>
           </li>
         </ul>
         <div class="footer-clock">
@@ -274,19 +268,30 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         </div>
       </div>
       <div class="footer-col">
-        <h4>Enviar correo con:</h4>
-        <div class="footer-links">
-          <a href="https://mail.google.com/" target="_blank" rel="noreferrer">Gmail</a>
-          <a href="https://outlook.live.com/" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
-        </div>
+        <h4>Enlaces útiles</h4>
         <div class="footer-links">
           <a href="https://www.webcolegios.com/" target="_blank" rel="noreferrer">[webcolegios]</a>
           <a href="https://www.colnubelen.edu.co/" target="_blank" rel="noreferrer">[Mapa de Sitio]</a>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.colnubelen.edu.co/sedes.php" target="_blank" rel="noreferrer">Sedes</a>
+          <a href="https://www.colnubelen.edu.co/pqr.php" target="_blank" rel="noreferrer">PQRS</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">© 2026 - Desarrollada por webcolegios | Institución Educativa Nuestra Señora de Belén</div>
   </footer>
+
+  <div class="footer-modal" id="correoModal" aria-hidden="true">
+    <div class="footer-modal-content">
+      <h3>📩 Enviar correo con:</h3>
+      <div class="footer-modal-actions">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Gmail</a>
+        <a href="https://outlook.live.com/owa/?path=/mail/action/compose&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
+      </div>
+      <button class="footer-modal-close" type="button" data-close-modal>Cerrar</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once "../config.php";
 
 $sql = "SELECT id, titulo, director, publicado_en, archivo_pdf FROM periodicos ORDER BY publicado_en DESC";
@@ -28,7 +28,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
 </head>
 <body>
   <a class="corner-logo" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.png" alt="Escudo Institucional">
+    <img src="escudo.jpeg" alt="Escudo Institucional">
   </a>
 
   <header class="public-header" id="inicio">
@@ -36,20 +36,60 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
     <div class="header-inner">
       <div class="brand-text">
         <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
-        <span class="brand-sub">Listado oficial de periódicos</span>
+        <span class="brand-sub">Archivo digital de periódicos escolares</span>
       </div>
       <nav class="main-nav">
         <a href="index.php">Inicio</a>
+        <a href="#archivo">Archivo</a>
         <a href="contacto.php">Contacto</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="periodicos-page" aria-labelledby="periodicos-title">
+    <section class="periodicos-hero" aria-labelledby="periodicos-hero-title">
+      <div class="periodicos-intro">
+        <div>
+          <p class="hero-kicker">ECO BELÉN · Voces que inspiran</p>
+          <h1 id="periodicos-hero-title">Periódicos escolares con identidad Colnubelen</h1>
+          <p class="hero-lead">Descubre las historias, investigaciones y proyectos que nacen en nuestras aulas. Cada edición refleja la creatividad, la investigación y el compromiso social de nuestra comunidad educativa.</p>
+        </div>
+        <div class="periodicos-stats">
+          <div class="metric-card">
+            <h3>Publicación</h3>
+            <p>Ediciones oficiales con enfoque académico y cultural.</p>
+          </div>
+          <div class="metric-card">
+            <h3>Equipo editorial</h3>
+            <p>Docentes y estudiantes lideran el proceso de creación.</p>
+          </div>
+          <div class="metric-card">
+            <h3>Acceso abierto</h3>
+            <p>Lectura en línea y descargas disponibles.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="periodicos-page" id="archivo" aria-labelledby="periodicos-title">
       <div class="section-header">
         <h2 id="periodicos-title">Periódicos escolares</h2>
         <p>Selecciona una edición para lectura en línea o descarga inmediata.</p>
+      </div>
+
+      <div class="periodicos-guides">
+        <article class="guide-card anim-card" style="--delay: 0.05s">
+          <h4>Lineamientos editoriales</h4>
+          <p>Promovemos contenidos con sentido humano, respeto por la diversidad y rigor investigativo.</p>
+        </article>
+        <article class="guide-card anim-card" style="--delay: 0.1s">
+          <h4>Integración pedagógica</h4>
+          <p>Los periódicos fortalecen las áreas de lenguaje, ciencias sociales y tecnología.</p>
+        </article>
+        <article class="guide-card anim-card" style="--delay: 0.15s">
+          <h4>Memoria institucional</h4>
+          <p>Cada edición registra los proyectos más importantes de la institución.</p>
+        </article>
       </div>
 
       <div class="periodicos-list">
@@ -82,6 +122,14 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         }
         ?>
       </div>
+
+      <div class="periodicos-cta">
+        <div>
+          <h3>¿Quieres participar en ECO BELÉN?</h3>
+          <p>Comparte tu propuesta con el equipo editorial y construyamos juntos nuevas historias.</p>
+        </div>
+        <a class="btn-outline" href="contacto.php">Enviar propuesta</a>
+      </div>
     </section>
   </main>
 
@@ -100,13 +148,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z"></path><circle cx="12" cy="11" r="2.5"></circle></svg>
             </span>
-            Cúcuta - Norte Santander
+            Cúcuta - Norte de Santander
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M4 20c1.5-3 4-5 8-5s6.5 2 8 5"></path></svg>
             </span>
-            Rectora: CARLOS LUIS VILLAMIZAR RAMIREZ
+            Rector: Carlos Luis Villamizar Ramírez
           </li>
         </ul>
         <div class="footer-social">
@@ -122,7 +170,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
             </span>
-            Horario de atención:
+            Horario de atención: Jornada mañana, tarde y única
           </li>
           <li>
             <span class="footer-icon" aria-hidden="true">
@@ -134,7 +182,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <span class="footer-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
             </span>
-            colnubelen@semcucuta.gov.co
+            <button class="btn-outline" type="button" data-open-modal="correoModal">colnubelen@semcucuta.gov.co</button>
           </li>
         </ul>
         <div class="footer-clock">
@@ -143,19 +191,30 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         </div>
       </div>
       <div class="footer-col">
-        <h4>Enviar correo con:</h4>
-        <div class="footer-links">
-          <a href="https://mail.google.com/" target="_blank" rel="noreferrer">Gmail</a>
-          <a href="https://outlook.live.com/" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
-        </div>
+        <h4>Enlaces útiles</h4>
         <div class="footer-links">
           <a href="https://www.webcolegios.com/" target="_blank" rel="noreferrer">[webcolegios]</a>
           <a href="https://www.colnubelen.edu.co/" target="_blank" rel="noreferrer">[Mapa de Sitio]</a>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.colnubelen.edu.co/sedes.php" target="_blank" rel="noreferrer">Sedes</a>
+          <a href="https://www.colnubelen.edu.co/pqr.php" target="_blank" rel="noreferrer">PQRS</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">© 2026 - Desarrollada por webcolegios | Institución Educativa Nuestra Señora de Belén</div>
   </footer>
+
+  <div class="footer-modal" id="correoModal" aria-hidden="true">
+    <div class="footer-modal-content">
+      <h3>📩 Enviar correo con:</h3>
+      <div class="footer-modal-actions">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Gmail</a>
+        <a href="https://outlook.live.com/owa/?path=/mail/action/compose&to=colnubelen@semcucuta.gov.co" target="_blank" rel="noreferrer">Outlook / Hotmail</a>
+      </div>
+      <button class="footer-modal-close" type="button" data-close-modal>Cerrar</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

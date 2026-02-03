@@ -69,4 +69,37 @@
         updateClock();
         setInterval(updateClock, 1000);
     }
+
+    const openModalButtons = document.querySelectorAll('[data-open-modal]');
+    const closeModalButtons = document.querySelectorAll('[data-close-modal]');
+
+    openModalButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const modalId = button.getAttribute('data-open-modal');
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+        });
+    });
+
+    closeModalButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const modal = button.closest('.footer-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
+    });
+
+    document.querySelectorAll('.footer-modal').forEach((modal) => {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
+    });
 });
