@@ -28,6 +28,8 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 a {
@@ -46,6 +48,7 @@ textarea:focus-visible {
 img {
     max-width: 100%;
     display: block;
+    height: auto;
 }
 
 .top-bar {
@@ -180,6 +183,10 @@ img {
 .hero-media {
     display: flex;
     justify-content: center;
+}
+
+.hero-media img {
+    max-width: 100%;
 }
 
 .hero-card {
@@ -578,6 +585,11 @@ img {
     overflow: hidden;
     background: #f8fafc;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.periodico-thumb object,
+.periodico-thumb iframe {
+    display: block;
 }
 
 .periodico-thumb object,
@@ -1061,6 +1073,14 @@ img {
     padding: 30px 24px 50px;
 }
 
+<<<<<<< codex/improve-and-redesign-public-directory-pages-wbugh2
+.pdf-container iframe {
+    width: 100%;
+    min-height: 60vh;
+}
+
+=======
+>>>>>>> main
 .periodico-header {
     display: flex;
     flex-wrap: wrap;
@@ -1206,6 +1226,11 @@ img {
         align-items: flex-start;
     }
 
+    .main-nav {
+        width: 100%;
+        gap: 12px;
+    }
+
     .corner-logo {
         width: 42px;
         height: 42px;
@@ -1232,6 +1257,42 @@ img {
 
     .footer-inner {
         gap: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    .hero {
+        padding: 60px 16px 70px;
+    }
+
+    .panel-section,
+    .mv-section,
+    .services-section,
+    .avisos-section,
+    .periodicos-section,
+    .contact-section,
+    .periodicos-page,
+    .spotlight-section,
+    .sedes-section {
+        padding: 50px 16px;
+    }
+
+    .hero-actions,
+    .periodico-actions,
+    .periodico-actions-inline,
+    .footer-links {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-primary,
+    .btn-outline {
+        width: 100%;
+        text-align: center;
+    }
+
+    .public-content {
+        padding: 20px 16px 40px;
     }
 }
 
