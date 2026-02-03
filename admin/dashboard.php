@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("Location: index.html");
+    header("Location: index.php");
     exit;
 }
 require_once "../config.php";
@@ -26,6 +26,7 @@ if ($result && $result->num_rows > 0) {
   <!-- Estilos -->
   <link href="style.css" rel="stylesheet">
   <link href="admin-style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="corner-logo" href="dashboard.php" aria-label="Ir al panel">

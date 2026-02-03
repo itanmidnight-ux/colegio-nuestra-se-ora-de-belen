@@ -1,7 +1,7 @@
 eco-belen/
 ├── admin/                     # Panel administrativo (login + subida periódicos)
-│   ├── index.html             # Página de login
-│   ├── dashboard.html         # Panel tras iniciar sesión (subida de PDFs)
+│   ├── index.php              # Página de login
+│   ├── dashboard.php          # Panel tras iniciar sesión (subida de PDFs)
 │   ├── upload.php             # Procesa subida de archivos
 │   ├── auth.php               # Procesa login
 │   ├── logout.php             # Cierra sesión
@@ -9,7 +9,8 @@ eco-belen/
 │   └── script.js              # Validaciones básicas en frontend
 │
 ├── public/                    # Página pública (lectores)
-│   ├── index.html             # Página principal (último periódico + nombre ECO BELÉN)
+│   ├── index.php              # Página principal (último periódico + nombre ECO BELÉN)
+│   ├── index.html             # Versión estática de la portada
 │   ├── view.php               # Visualiza un periódico (PDF embed + comentarios)
 │   ├── comments.php           # Procesa comentarios
 │   ├── style.css              # Estilos públicos

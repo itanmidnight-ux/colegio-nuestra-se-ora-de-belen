@@ -17,7 +17,7 @@ $password = isset($_POST['password']) ? $_POST['password'] : '';
 // Validación básica de campos
 if ($usuario_input === '' || $password === '') {
     // campos vacíos
-    header("Location: index.html?error=campos");
+    header("Location: index.php?error=campos");
     exit();
 }
 
@@ -26,7 +26,7 @@ $sql = "SELECT id, nombre, email, password, rol FROM users WHERE nombre = ? OR e
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     // Error de SQL (raro). Para debugging, puedes habilitar log aquí.
-    header("Location: index.html?error=sql");
+    header("Location: index.php?error=sql");
     exit();
 }
 $stmt->bind_param("ss", $usuario_input, $usuario_input);
@@ -35,7 +35,7 @@ $result = $stmt->get_result();
 
 if (!$result || $result->num_rows === 0) {
     // usuario no encontrado
-    header("Location: index.html?error=usuario");
+    header("Location: index.php?error=usuario");
     exit();
 }
 
@@ -66,6 +66,6 @@ if ($ok) {
     header("Location: dashboard.php");
     exit();
 } else {
-    header("Location: index.html?error=clave");
+    header("Location: index.php?error=clave");
     exit();
 }

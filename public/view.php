@@ -46,7 +46,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
 </head>
 <body class="pdf-viewer-page">
   <a class="corner-logo" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.png" alt="Escudo Institucional">
+    <img src="escudo.jpeg" alt="Escudo Institucional">
   </a>
 
   <header class="public-header">

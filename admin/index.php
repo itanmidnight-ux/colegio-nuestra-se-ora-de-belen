@@ -5,9 +5,10 @@
   <title>Acceso Administrativo - ECO BELÉN</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="login-style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="corner-logo" href="index.html" aria-label="Ir al inicio de acceso">
+  <a class="corner-logo" href="index.php" aria-label="Ir al inicio de acceso">
     <img src="escudo.png" alt="Escudo Institucional">
   </a>
   <div class="login-wrapper">
@@ -19,7 +20,7 @@
 
       <!-- Mostrar mensaje de error (si existe) -->
       <?php if (isset($_GET['error'])): ?>
-        <div style="color:#b00; text-align:center; margin-bottom:10px;">
+        <div class="login-alert">
           <?php
             $err = $_GET['error'];
             if ($err === 'campos') echo "Por favor completa todos los campos.";
