@@ -1,6 +1,20 @@
 <?php
 require_once "../config.php";
 
+function ensureContactosColumns(mysqli $conn, array $columns): void
+{
+    foreach ($columns as $column => $definition) {
+        $safeColumn = $conn->real_escape_string($column);
+        $existsResult = $conn->query("SHOW COLUMNS FROM contactos LIKE '{$safeColumn}'");
+        if ($existsResult && $existsResult->num_rows === 0) {
+            $conn->query("ALTER TABLE contactos ADD COLUMN {$column} {$definition}");
+        }
+        if ($existsResult) {
+            $existsResult->free();
+        }
+    }
+}
+
 $success = "";
 $error = "";
 
@@ -37,16 +51,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         $conn->query($create);
 
-        $schemaUpdates = [
-            "ALTER TABLE contactos ADD COLUMN solicita_contacto TINYINT(1) NOT NULL DEFAULT 0",
-            "ALTER TABLE contactos ADD COLUMN grado VARCHAR(80) DEFAULT NULL",
-            "ALTER TABLE contactos ADD COLUMN urgente TINYINT(1) NOT NULL DEFAULT 0",
-            "ALTER TABLE contactos ADD COLUMN nombre_contacto VARCHAR(120) DEFAULT NULL"
-        ];
-
-        foreach ($schemaUpdates as $update) {
-            @$conn->query($update);
-        }
+        ensureContactosColumns($conn, [
+            "solicita_contacto" => "TINYINT(1) NOT NULL DEFAULT 0",
+            "grado" => "VARCHAR(80) DEFAULT NULL",
+            "urgente" => "TINYINT(1) NOT NULL DEFAULT 0",
+            "nombre_contacto" => "VARCHAR(120) DEFAULT NULL"
+        ]);
 
         $stmt = $conn->prepare("INSERT INTO contactos (nombre, email, tipo, mensaje, solicita_contacto, grado, urgente, nombre_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssisis", $nombre, $email, $tipo, $mensaje, $solicitaContacto, $grado, $urgente, $nombreContacto);
