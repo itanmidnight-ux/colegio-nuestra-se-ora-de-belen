@@ -42,8 +42,44 @@ ensureContactosColumns($conn, [
     "nombre_contacto" => "VARCHAR(120) DEFAULT NULL"
 ]);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_selected') {
+    $ids = $_POST['ids'] ?? [];
+    if (!is_array($ids)) {
+        $ids = [];
+    }
+
+    $ids = array_values(array_filter(array_map('intval', $ids), function ($id) {
+        return $id > 0;
+    }));
+
+    if (!empty($ids)) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $types = str_repeat('i', count($ids));
+        $stmtDelete = $conn->prepare("DELETE FROM contactos WHERE id IN ({$placeholders})");
+        if ($stmtDelete) {
+            $stmtDelete->bind_param($types, ...$ids);
+            $stmtDelete->execute();
+            $stmtDelete->close();
+            $_SESSION['contactos_flash'] = count($ids) . " mensaje(s) eliminado(s) correctamente.";
+        } else {
+            $_SESSION['contactos_flash'] = "No se pudieron eliminar los mensajes seleccionados.";
+        }
+    } else {
+        $_SESSION['contactos_flash'] = "Debes seleccionar al menos un mensaje para eliminar.";
+    }
+
+    $query = http_build_query([
+        'filtro' => $_POST['filtro'] ?? 'todos',
+        'q' => $_POST['q'] ?? ''
+    ]);
+    header("Location: contactos.php" . (!empty($query) ? "?{$query}" : ''));
+    exit;
+}
+
 $filtro = $_GET['filtro'] ?? 'todos';
 $busqueda = trim($_GET['q'] ?? '');
+$flash = $_SESSION['contactos_flash'] ?? '';
+unset($_SESSION['contactos_flash']);
 
 $where = [];
 $params = [];
@@ -104,8 +140,11 @@ if ($stmt) {
     <div class="header-title-wrapper">
         <h1>💬 Bandeja de mensajes de contacto</h1>
     </div>
-    <a href="dashboard.php" class="btn-view" style="position:absolute; top:20px; right:170px;">Panel</a>
-    <a href="logout.php" class="btn-view" style="position:absolute; top:20px; right:20px;">Cerrar sesión</a>
+    <nav class="header-actions" aria-label="Navegación del panel admin">
+        <a href="dashboard.php" class="btn-view">Panel</a>
+        <a href="secciones.php" class="btn-view">Secciones</a>
+        <a href="logout.php" class="btn-view">Cerrar sesión</a>
+    </nav>
 </header>
 
 <main class="mensajes-app">
@@ -129,6 +168,23 @@ if ($stmt) {
     </aside>
 
     <section class="mensajes-list">
+      <?php if (!empty($flash)): ?>
+        <div class="flash-message"><?php echo htmlspecialchars($flash); ?></div>
+      <?php endif; ?>
+
+      <form method="post" id="deleteMessagesForm" onsubmit="return confirm('¿Seguro que deseas eliminar los mensajes seleccionados? Esta acción no se puede deshacer.');">
+        <input type="hidden" name="action" value="delete_selected">
+        <input type="hidden" name="filtro" value="<?php echo htmlspecialchars($filtro); ?>">
+        <input type="hidden" name="q" value="<?php echo htmlspecialchars($busqueda); ?>">
+
+        <div class="bulk-actions">
+          <label class="check-all-wrap">
+            <input type="checkbox" id="selectAllMessages">
+            Seleccionar todo
+          </label>
+          <button type="submit" class="btn-delete bulk-delete-btn">🗑️ Eliminar seleccionados</button>
+        </div>
+
       <?php if (empty($mensajes)): ?>
         <article class="mensaje-card empty">
           <h3>No hay mensajes para este filtro</h3>
@@ -137,6 +193,13 @@ if ($stmt) {
       <?php else: ?>
         <?php foreach ($mensajes as $mensaje): ?>
           <article class="mensaje-card <?php echo (int)$mensaje['urgente'] === 1 ? 'is-urgent' : ''; ?>">
+            <div class="mensaje-select-row">
+              <label>
+                <input type="checkbox" class="mensaje-check" name="ids[]" value="<?php echo (int)$mensaje['id']; ?>">
+                Seleccionar mensaje
+              </label>
+            </div>
+
             <div class="mensaje-head">
               <div>
                 <h3><?php echo htmlspecialchars($mensaje['nombre']); ?></h3>
@@ -162,8 +225,30 @@ if ($stmt) {
           </article>
         <?php endforeach; ?>
       <?php endif; ?>
+      </form>
     </section>
 </main>
 
+<script>
+const selectAll = document.getElementById('selectAllMessages');
+const checks = Array.from(document.querySelectorAll('.mensaje-check'));
+
+if (selectAll) {
+  selectAll.addEventListener('change', function () {
+    checks.forEach(function (check) {
+      check.checked = selectAll.checked;
+    });
+  });
+}
+
+checks.forEach(function (check) {
+  check.addEventListener('change', function () {
+    if (!selectAll) {
+      return;
+    }
+    selectAll.checked = checks.length > 0 && checks.every(function (item) { return item.checked; });
+  });
+});
+</script>
 </body>
 </html>

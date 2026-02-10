@@ -36,9 +36,11 @@ if ($result && $result->num_rows > 0) {
     <div class="header-title-wrapper">
         <h1>🌐 ECO BELÉN - Panel Admin</h1>
     </div>
-    <a href="contactos.php" class="btn-view" style="position:absolute; top:20px; right:300px;">Mensajes</a>
-    <a href="secciones.php" class="btn-view" style="position:absolute; top:20px; right:160px;">Secciones</a>
-    <a href="logout.php" class="btn-view" style="position:absolute; top:20px; right:20px;">Cerrar sesión</a>
+    <nav class="header-actions" aria-label="Navegación del panel admin">
+        <a href="contactos.php" class="btn-view">Mensajes</a>
+        <a href="secciones.php" class="btn-view">Secciones</a>
+        <a href="logout.php" class="btn-view">Cerrar sesión</a>
+    </nav>
 </header>
 
 <main class="admin-layout" id="main-content">

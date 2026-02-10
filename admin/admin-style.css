@@ -2,8 +2,3 @@
 
 /* Overrides específicos para el panel administrativo */
 
-.public-header .btn-view {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-}
