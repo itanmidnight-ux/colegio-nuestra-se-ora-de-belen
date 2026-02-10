@@ -103,7 +103,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       </div>
 
       <div class="pdf-container">
-        <iframe src="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>" frameborder="0"></iframe>
+        <iframe src="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>#zoom=page-fit" frameborder="0" title="Periódico completo"></iframe>
       </div>
     </section>
 

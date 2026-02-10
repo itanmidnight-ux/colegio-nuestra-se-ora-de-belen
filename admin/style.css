@@ -367,3 +367,50 @@ select:focus-visible {
     padding: 8px 12px;
   }
 }
+
+.extras-panel {
+  margin: 16px 0;
+  padding: 14px;
+  background: #f8fbff;
+  border: 1px dashed rgba(0, 72, 132, 0.25);
+  border-radius: 12px;
+}
+
+.extras-panel h4 {
+  margin: 0 0 8px;
+  color: var(--admin-primary);
+}
+
+.extra-blocks {
+  display: grid;
+  gap: 12px;
+}
+
+.extra-block {
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.extra-block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.extra-block select,
+.extra-block textarea,
+.extra-block input[type="text"] {
+  width: 100%;
+  margin: 6px 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-border);
+  padding: 10px;
+  font-family: inherit;
+}
+
+.extra-block small {
+  color: #5a6675;
+}

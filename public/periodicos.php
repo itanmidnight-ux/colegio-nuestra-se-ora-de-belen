@@ -103,9 +103,8 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
                 $delayStyle = number_format($delay, 2);
                 echo "<article class='periodico-card anim-card' style='--delay: {$delayStyle}s'>
                         <a class='card-link' href='view.php?id={$row['id']}'>Abrir</a>
-                        <div class='periodico-thumb'>
-                          <embed src='../uploads/{$row['archivo_pdf']}#page=1&zoom=80&toolbar=0&navpanes=0&scrollbar=0' type='application/pdf'>
-                          <iframe src='../uploads/{$row['archivo_pdf']}#page=1&zoom=80&toolbar=0&navpanes=0&scrollbar=0' title='Portada de {$row['titulo']}'></iframe>
+                        <div class='periodico-thumb periodico-thumb-full'>
+                          <iframe src='../uploads/{$row['archivo_pdf']}#page=1&zoom=page-fit&toolbar=0&navpanes=0&scrollbar=0' title='Vista previa de {$row['titulo']}'></iframe>
                         </div>
                         <div>
                           <h3>{$row['titulo']}</h3>

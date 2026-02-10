@@ -6,14 +6,25 @@ $conn->query("CREATE TABLE IF NOT EXISTS secciones_periodico (
     descripcion TEXT,
     contenido LONGTEXT,
     imagen VARCHAR(255),
+    bloques_extra LONGTEXT,
     orden_visual INT DEFAULT 0,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+$conn->query("ALTER TABLE secciones_periodico ADD COLUMN IF NOT EXISTS bloques_extra LONGTEXT AFTER imagen");
+
 $secciones = [];
-$res = $conn->query("SELECT titulo, descripcion, contenido, imagen FROM secciones_periodico ORDER BY orden_visual ASC, creado_en DESC");
+$res = $conn->query("SELECT titulo, descripcion, contenido, imagen, bloques_extra FROM secciones_periodico ORDER BY orden_visual ASC, creado_en DESC");
 if ($res) while ($r = $res->fetch_assoc()) $secciones[] = $r;
+
+function normalizar_url($url)
+{
+    if (preg_match('/^(https?:\/\/|\.\.\/uploads\/|\/uploads\/)/i', $url)) {
+        return $url;
+    }
+    return '../uploads/' . ltrim($url, '/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -49,16 +60,49 @@ if ($res) while ($r = $res->fetch_assoc()) $secciones[] = $r;
       <h1>Secciones del periódico escolar</h1>
       <p>Este contenido se actualiza desde el panel administrativo.</p>
     </div>
-    <div class="periodicos-list">
+    <div class="periodicos-list sections-grid">
       <?php if (count($secciones) > 0): ?>
         <?php foreach ($secciones as $sec): ?>
-          <article class="periodico-card anim-card">
+          <?php
+          $bloques = json_decode($sec['bloques_extra'] ?? '[]', true);
+          if (!is_array($bloques)) {
+              $bloques = [];
+          }
+          ?>
+          <article class="periodico-card anim-card section-card">
             <?php if (!empty($sec['imagen'])): ?>
-              <div class="periodico-thumb"><img src="../uploads/<?= htmlspecialchars($sec['imagen']) ?>" alt="Imagen sección <?= htmlspecialchars($sec['titulo']) ?>" style="width:100%;height:100%;object-fit:cover;"></div>
+              <div class="periodico-thumb section-thumb">
+                <img src="../uploads/<?= htmlspecialchars($sec['imagen']) ?>" alt="Imagen sección <?= htmlspecialchars($sec['titulo']) ?>" class="section-image-main">
+              </div>
             <?php endif; ?>
-            <h3><?= htmlspecialchars($sec['titulo']) ?></h3>
-            <p><?= htmlspecialchars($sec['descripcion']) ?></p>
+
+            <h2 class="section-title"><?= htmlspecialchars($sec['titulo']) ?></h2>
+            <p class="section-description"><?= htmlspecialchars($sec['descripcion']) ?></p>
             <p><?= nl2br(htmlspecialchars($sec['contenido'])) ?></p>
+
+            <?php if (count($bloques) > 0): ?>
+              <div class="section-extra-content">
+                <?php foreach ($bloques as $bloque): ?>
+                  <?php
+                  $tipo = $bloque['tipo'] ?? '';
+                  $valor = trim($bloque['valor'] ?? '');
+                  if ($valor === '') continue;
+                  ?>
+
+                  <?php if ($tipo === 'texto'): ?>
+                    <p class="section-extra-text"><?= nl2br(htmlspecialchars($valor)) ?></p>
+                  <?php elseif ($tipo === 'imagen'): ?>
+                    <figure class="section-extra-media">
+                      <img src="<?= htmlspecialchars(normalizar_url($valor)) ?>" alt="Imagen adicional de <?= htmlspecialchars($sec['titulo']) ?>">
+                    </figure>
+                  <?php elseif ($tipo === 'video'): ?>
+                    <div class="section-video-wrap">
+                      <iframe src="<?= htmlspecialchars($valor) ?>" title="Video de <?= htmlspecialchars($sec['titulo']) ?>" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
           </article>
         <?php endforeach; ?>
       <?php else: ?>
