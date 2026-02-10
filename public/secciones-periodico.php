@@ -25,6 +25,71 @@ function normalizar_url($url)
     }
     return '../uploads/' . ltrim($url, '/');
 }
+
+function obtener_url_embed_video($url)
+{
+    $url = trim((string)$url);
+    if ($url === '') {
+        return null;
+    }
+
+    if (preg_match('/^https?:\/\/www\.youtube\.com\/embed\//i', $url)) {
+        return $url;
+    }
+
+    $partes = parse_url($url);
+    if (!is_array($partes) || empty($partes['host'])) {
+        return null;
+    }
+
+    $host = strtolower($partes['host']);
+    $path = $partes['path'] ?? '';
+    $query = [];
+    if (!empty($partes['query'])) {
+        parse_str($partes['query'], $query);
+    }
+
+    if (strpos($host, 'youtube.com') !== false || strpos($host, 'youtu.be') !== false) {
+        $videoId = '';
+
+        if (!empty($query['v'])) {
+            $videoId = $query['v'];
+        } elseif (strpos($host, 'youtu.be') !== false) {
+            $videoId = trim($path, '/');
+        } elseif (preg_match('#/embed/([^/?]+)#', $path, $m)) {
+            $videoId = $m[1];
+        } elseif (preg_match('#/shorts/([^/?]+)#', $path, $m)) {
+            $videoId = $m[1];
+        }
+
+        return $videoId !== '' ? 'https://www.youtube.com/embed/' . rawurlencode($videoId) : null;
+    }
+
+    if (strpos($host, 'vimeo.com') !== false) {
+        if (preg_match('#/(?:video/)?(\d+)#', $path, $m)) {
+            return 'https://player.vimeo.com/video/' . $m[1];
+        }
+        return null;
+    }
+
+    if (strpos($host, 'dailymotion.com') !== false || strpos($host, 'dai.ly') !== false) {
+        if (preg_match('#/video/([^_/?]+)#', $path, $m)) {
+            return 'https://www.dailymotion.com/embed/video/' . rawurlencode($m[1]);
+        }
+        $id = trim($path, '/');
+        return $id !== '' ? 'https://www.dailymotion.com/embed/video/' . rawurlencode($id) : null;
+    }
+
+    if (strpos($host, 'loom.com') !== false && preg_match('#/share/([^/?]+)#', $path, $m)) {
+        return 'https://www.loom.com/embed/' . rawurlencode($m[1]);
+    }
+
+    if (preg_match('/^https:\/\//i', $url)) {
+        return $url;
+    }
+
+    return null;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -70,13 +135,13 @@ function normalizar_url($url)
           }
           ?>
           <article class="periodico-card anim-card section-card">
+            <h2 class="section-title"><?= htmlspecialchars($sec['titulo']) ?></h2>
+
             <?php if (!empty($sec['imagen'])): ?>
               <div class="periodico-thumb section-thumb">
                 <img src="../uploads/<?= htmlspecialchars($sec['imagen']) ?>" alt="Imagen sección <?= htmlspecialchars($sec['titulo']) ?>" class="section-image-main">
               </div>
             <?php endif; ?>
-
-            <h2 class="section-title"><?= htmlspecialchars($sec['titulo']) ?></h2>
             <p class="section-description"><?= htmlspecialchars($sec['descripcion']) ?></p>
             <p><?= nl2br(htmlspecialchars($sec['contenido'])) ?></p>
 
@@ -96,9 +161,14 @@ function normalizar_url($url)
                       <img src="<?= htmlspecialchars(normalizar_url($valor)) ?>" alt="Imagen adicional de <?= htmlspecialchars($sec['titulo']) ?>">
                     </figure>
                   <?php elseif ($tipo === 'video'): ?>
-                    <div class="section-video-wrap">
-                      <iframe src="<?= htmlspecialchars($valor) ?>" title="Video de <?= htmlspecialchars($sec['titulo']) ?>" allowfullscreen loading="lazy"></iframe>
-                    </div>
+                    <?php $videoEmbed = obtener_url_embed_video($valor); ?>
+                    <?php if ($videoEmbed): ?>
+                      <div class="section-video-wrap">
+                        <iframe src="<?= htmlspecialchars($videoEmbed) ?>" title="Video de <?= htmlspecialchars($sec['titulo']) ?>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                      </div>
+                    <?php else: ?>
+                      <p class="section-extra-text">No se pudo embeber este video. Ábrelo aquí: <a href="<?= htmlspecialchars($valor) ?>" target="_blank" rel="noreferrer">ver video</a>.</p>
+                    <?php endif; ?>
                   <?php endif; ?>
                 <?php endforeach; ?>
               </div>

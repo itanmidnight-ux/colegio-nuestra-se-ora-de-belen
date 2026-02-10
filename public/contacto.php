@@ -26,7 +26,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $conn->prepare("INSERT INTO contactos (nombre, email, tipo, mensaje) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $nombre, $email, $tipo, $mensaje);
         if ($stmt->execute()) {
-            $success = "Mensaje enviado correctamente. Gracias por contactarnos.";
+            $to = "contactoecobelen@gmail.com";
+            $subject = "Nuevo mensaje desde Contacto ECO Belén";
+            $safeNombre = str_replace(["\r", "\n"], ' ', $nombre);
+            $safeEmail = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : "no-valido";
+            $safeTipo = str_replace(["\r", "\n"], ' ', $tipo);
+
+            $body = "Se recibió un nuevo mensaje desde el formulario de contacto.\n\n";
+            $body .= "Nombre: {$safeNombre}\n";
+            $body .= "Correo: {$safeEmail}\n";
+            $body .= "Tipo: {$safeTipo}\n";
+            $body .= "Mensaje:\n{$mensaje}\n\n";
+            $body .= "Fecha servidor: " . date('Y-m-d H:i:s');
+
+            $headers = [
+                "MIME-Version: 1.0",
+                "Content-Type: text/plain; charset=UTF-8",
+                "From: Formulario ECO Belén <no-reply@colnubelen.edu.co>",
+                "Reply-To: {$safeEmail}",
+                "X-Mailer: PHP/" . phpversion(),
+            ];
+
+            $mailSent = @mail($to, $subject, $body, implode("\r\n", $headers));
+
+            if ($mailSent) {
+                $success = "Mensaje enviado correctamente. Gracias por contactarnos.";
+            } else {
+                $error = "Tu mensaje se guardó, pero no se pudo enviar al correo institucional en este momento.";
+            }
         } else {
             $error = "No se pudo enviar el mensaje. Inténtalo de nuevo.";
         }
