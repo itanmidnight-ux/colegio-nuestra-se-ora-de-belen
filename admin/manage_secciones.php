@@ -12,10 +12,47 @@ $conn->query("CREATE TABLE IF NOT EXISTS secciones_periodico (
     descripcion TEXT,
     contenido LONGTEXT,
     imagen VARCHAR(255),
+    bloques_extra LONGTEXT,
     orden_visual INT DEFAULT 0,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+$conn->query("ALTER TABLE secciones_periodico ADD COLUMN IF NOT EXISTS bloques_extra LONGTEXT AFTER imagen");
+
+function normalizar_bloques($raw)
+{
+    if (!$raw) {
+        return json_encode([]);
+    }
+
+    $decoded = json_decode($raw, true);
+    if (!is_array($decoded)) {
+        return false;
+    }
+
+    $permitidos = ['texto', 'imagen', 'video'];
+    $limpios = [];
+
+    foreach ($decoded as $b) {
+        if (!is_array($b)) {
+            continue;
+        }
+        $tipo = trim($b['tipo'] ?? '');
+        $valor = trim($b['valor'] ?? '');
+
+        if (!in_array($tipo, $permitidos, true) || $valor === '') {
+            continue;
+        }
+
+        $limpios[] = [
+            'tipo' => $tipo,
+            'valor' => $valor,
+        ];
+    }
+
+    return json_encode($limpios, JSON_UNESCAPED_UNICODE);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -51,14 +88,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $contenido = trim($_POST['contenido'] ?? '');
         $imagen = trim($_POST['imagen'] ?? '');
         $orden = intval($_POST['orden_visual'] ?? 0);
+        $bloques_extra = normalizar_bloques($_POST['bloques_json'] ?? '[]');
 
         if ($titulo === '') {
             echo json_encode(["status" => "error", "message" => "El título es obligatorio."]);
             exit;
         }
 
-        $stmt = $conn->prepare("INSERT INTO secciones_periodico (titulo, descripcion, contenido, imagen, orden_visual) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssi", $titulo, $descripcion, $contenido, $imagen, $orden);
+        if ($bloques_extra === false) {
+            echo json_encode(["status" => "error", "message" => "Los bloques adicionales no tienen formato válido."]);
+            exit;
+        }
+
+        $stmt = $conn->prepare("INSERT INTO secciones_periodico (titulo, descripcion, contenido, imagen, bloques_extra, orden_visual) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $titulo, $descripcion, $contenido, $imagen, $bloques_extra, $orden);
         $ok = $stmt->execute();
         $stmt->close();
 
@@ -73,14 +116,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $contenido = trim($_POST['contenido'] ?? '');
         $imagen = trim($_POST['imagen'] ?? '');
         $orden = intval($_POST['orden_visual'] ?? 0);
+        $bloques_extra = normalizar_bloques($_POST['bloques_json'] ?? '[]');
 
         if ($id <= 0 || $titulo === '') {
             echo json_encode(["status" => "error", "message" => "Datos inválidos para editar."]);
             exit;
         }
 
-        $stmt = $conn->prepare("UPDATE secciones_periodico SET titulo=?, descripcion=?, contenido=?, imagen=?, orden_visual=? WHERE id=?");
-        $stmt->bind_param("ssssii", $titulo, $descripcion, $contenido, $imagen, $orden, $id);
+        if ($bloques_extra === false) {
+            echo json_encode(["status" => "error", "message" => "Los bloques adicionales no tienen formato válido."]);
+            exit;
+        }
+
+        $stmt = $conn->prepare("UPDATE secciones_periodico SET titulo=?, descripcion=?, contenido=?, imagen=?, bloques_extra=?, orden_visual=? WHERE id=?");
+        $stmt->bind_param("sssssii", $titulo, $descripcion, $contenido, $imagen, $bloques_extra, $orden, $id);
         $ok = $stmt->execute();
         $stmt->close();
 

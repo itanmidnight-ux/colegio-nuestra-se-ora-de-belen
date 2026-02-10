@@ -12,13 +12,16 @@ $conn->query("CREATE TABLE IF NOT EXISTS secciones_periodico (
     descripcion TEXT,
     contenido LONGTEXT,
     imagen VARCHAR(255),
+    bloques_extra LONGTEXT,
     orden_visual INT DEFAULT 0,
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+$conn->query("ALTER TABLE secciones_periodico ADD COLUMN IF NOT EXISTS bloques_extra LONGTEXT AFTER imagen");
+
 $secciones = [];
-$res = $conn->query("SELECT id, titulo, descripcion, contenido, imagen, orden_visual FROM secciones_periodico ORDER BY orden_visual ASC, creado_en DESC");
+$res = $conn->query("SELECT id, titulo, descripcion, contenido, imagen, bloques_extra, orden_visual FROM secciones_periodico ORDER BY orden_visual ASC, creado_en DESC");
 if ($res) {
     while ($row = $res->fetch_assoc()) {
         $secciones[] = $row;
@@ -55,7 +58,14 @@ if ($res) {
             <span><?= htmlspecialchars($s['descripcion']) ?></span>
           </div>
           <div class="action-buttons">
-            <button class="btn-edit btn-open-edit" data-id="<?= intval($s['id']) ?>" data-titulo="<?= htmlspecialchars($s['titulo']) ?>" data-descripcion="<?= htmlspecialchars($s['descripcion']) ?>" data-contenido="<?= htmlspecialchars($s['contenido']) ?>" data-imagen="<?= htmlspecialchars($s['imagen']) ?>" data-orden="<?= intval($s['orden_visual']) ?>">✏️ Editar</button>
+            <button class="btn-edit btn-open-edit"
+                    data-id="<?= intval($s['id']) ?>"
+                    data-titulo="<?= htmlspecialchars($s['titulo']) ?>"
+                    data-descripcion="<?= htmlspecialchars($s['descripcion']) ?>"
+                    data-contenido="<?= htmlspecialchars($s['contenido']) ?>"
+                    data-imagen="<?= htmlspecialchars($s['imagen']) ?>"
+                    data-bloques='<?= htmlspecialchars($s['bloques_extra'] ?: '[]', ENT_QUOTES, 'UTF-8') ?>'
+                    data-orden="<?= intval($s['orden_visual']) ?>">✏️ Editar</button>
             <button class="btn-delete btn-open-delete" data-id="<?= intval($s['id']) ?>">🗑️ Eliminar</button>
           </div>
         </div>
@@ -71,11 +81,20 @@ if ($res) {
   <h3>Nueva sección</h3>
   <form id="formAdd">
     <input type="hidden" name="imagen" id="add_imagen">
+    <input type="hidden" name="bloques_json" id="add_bloques_json">
     <label>Título</label><input type="text" name="titulo" required>
     <label>Descripción corta</label><textarea name="descripcion"></textarea>
-    <label>Contenido</label><textarea name="contenido"></textarea>
+    <label>Contenido principal</label><textarea name="contenido"></textarea>
     <label>Orden visual</label><input type="number" name="orden_visual" value="0">
-    <label>Imagen de la sección</label><input type="file" id="add_file" accept="image/jpeg,image/png,image/webp">
+    <label>Imagen de portada de la sección</label><input type="file" id="add_file" accept="image/jpeg,image/png,image/webp">
+
+    <div class="extras-panel">
+      <h4>Contenido adicional</h4>
+      <p>Agrega más información en el orden que deseas mostrarla: texto, imágenes o videos.</p>
+      <div id="addBlocks" class="extra-blocks"></div>
+      <button type="button" class="btn-view" id="addBlockBtn" style="margin-top:10px;">➕ Agregar bloque extra</button>
+    </div>
+
     <button type="submit" class="btn-view">Guardar sección</button>
   </form>
 </div></div>
@@ -86,11 +105,20 @@ if ($res) {
   <form id="formEdit">
     <input type="hidden" name="id" id="edit_id">
     <input type="hidden" name="imagen" id="edit_imagen">
+    <input type="hidden" name="bloques_json" id="edit_bloques_json">
     <label>Título</label><input type="text" name="titulo" id="edit_titulo" required>
     <label>Descripción corta</label><textarea name="descripcion" id="edit_descripcion"></textarea>
-    <label>Contenido</label><textarea name="contenido" id="edit_contenido"></textarea>
+    <label>Contenido principal</label><textarea name="contenido" id="edit_contenido"></textarea>
     <label>Orden visual</label><input type="number" name="orden_visual" id="edit_orden" value="0">
-    <label>Reemplazar imagen</label><input type="file" id="edit_file" accept="image/jpeg,image/png,image/webp">
+    <label>Reemplazar imagen de portada</label><input type="file" id="edit_file" accept="image/jpeg,image/png,image/webp">
+
+    <div class="extras-panel">
+      <h4>Contenido adicional</h4>
+      <p>Estos bloques se mostrarán debajo del contenido principal.</p>
+      <div id="editBlocks" class="extra-blocks"></div>
+      <button type="button" class="btn-view" id="editBlockBtn" style="margin-top:10px;">➕ Agregar bloque extra</button>
+    </div>
+
     <button type="submit" class="btn-view">Actualizar sección</button>
   </form>
 </div></div>
@@ -120,8 +148,94 @@ async function uploadImage(input, hiddenId){
   if(out.status==='ok') document.getElementById(hiddenId).value = out.filename;
   else alert(out.message || 'No se pudo subir imagen');
 }
+
 document.getElementById('add_file').addEventListener('change',()=>uploadImage(document.getElementById('add_file'),'add_imagen'));
 document.getElementById('edit_file').addEventListener('change',()=>uploadImage(document.getElementById('edit_file'),'edit_imagen'));
+
+function crearBloque({ tipo = 'texto', valor = '' } = {}) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'extra-block';
+
+  wrapper.innerHTML = `
+    <div class="extra-block-head">
+      <strong>Bloque adicional</strong>
+      <button type="button" class="btn-delete remove-block">Eliminar</button>
+    </div>
+    <label>Tipo</label>
+    <select class="block-tipo">
+      <option value="texto">Texto</option>
+      <option value="imagen">Imagen</option>
+      <option value="video">Video</option>
+    </select>
+    <label>Contenido / URL</label>
+    <textarea class="block-valor" placeholder="Texto adicional o URL de imagen/video"></textarea>
+    <label class="label-upload" style="display:none;">Subir imagen para este bloque</label>
+    <input class="block-file" type="file" accept="image/jpeg,image/png,image/webp" style="display:none;">
+    <small class="block-help"></small>
+  `;
+
+  const tipoSelect = wrapper.querySelector('.block-tipo');
+  const valorInput = wrapper.querySelector('.block-valor');
+  const fileInput = wrapper.querySelector('.block-file');
+  const labelUpload = wrapper.querySelector('.label-upload');
+  const help = wrapper.querySelector('.block-help');
+
+  const refrescar = () => {
+    const tipoActual = tipoSelect.value;
+    if (tipoActual === 'texto') {
+      labelUpload.style.display = 'none';
+      fileInput.style.display = 'none';
+      help.textContent = 'Escribe texto libre para ampliar la sección.';
+    } else if (tipoActual === 'imagen') {
+      labelUpload.style.display = 'block';
+      fileInput.style.display = 'block';
+      help.textContent = 'Puedes subir una imagen o pegar una URL.';
+    } else {
+      labelUpload.style.display = 'none';
+      fileInput.style.display = 'none';
+      help.textContent = 'Pega un enlace embebible de YouTube/Vimeo u otra plataforma.';
+    }
+  };
+
+  tipoSelect.value = tipo;
+  valorInput.value = valor;
+  refrescar();
+
+  tipoSelect.addEventListener('change', refrescar);
+  wrapper.querySelector('.remove-block').addEventListener('click', () => wrapper.remove());
+  fileInput.addEventListener('change', async () => {
+    if (!fileInput.files[0]) return;
+    const fd = new FormData();
+    fd.append('action','upload_image');
+    fd.append('imagen', fileInput.files[0]);
+    const res = await fetch('manage_secciones.php',{method:'POST', body:fd});
+    const out = await res.json();
+    if(out.status==='ok') valorInput.value = '../uploads/' + out.filename;
+    else alert(out.message || 'No se pudo subir imagen');
+  });
+
+  return wrapper;
+}
+
+function getBloques(container) {
+  return [...container.querySelectorAll('.extra-block')]
+    .map((el) => ({
+      tipo: el.querySelector('.block-tipo').value,
+      valor: el.querySelector('.block-valor').value.trim()
+    }))
+    .filter((b) => b.valor !== '');
+}
+
+function setBloques(container, bloques = []) {
+  container.innerHTML = '';
+  if (!Array.isArray(bloques)) return;
+  bloques.forEach((b) => container.appendChild(crearBloque(b)));
+}
+
+const addBlocks = document.getElementById('addBlocks');
+const editBlocks = document.getElementById('editBlocks');
+document.getElementById('addBlockBtn').addEventListener('click', () => addBlocks.appendChild(crearBloque()));
+document.getElementById('editBlockBtn').addEventListener('click', () => editBlocks.appendChild(crearBloque()));
 
 document.querySelectorAll('.btn-open-edit').forEach(btn=>btn.addEventListener('click',()=>{
   edit_id.value = btn.dataset.id;
@@ -130,6 +244,11 @@ document.querySelectorAll('.btn-open-edit').forEach(btn=>btn.addEventListener('c
   edit_contenido.value = btn.dataset.contenido;
   edit_imagen.value = btn.dataset.imagen;
   edit_orden.value = btn.dataset.orden;
+
+  let bloques = [];
+  try { bloques = JSON.parse(btn.dataset.bloques || '[]'); } catch(e) { bloques = []; }
+  setBloques(editBlocks, bloques);
+
   open('modalEdit');
 }));
 
@@ -139,6 +258,13 @@ document.querySelectorAll('.btn-open-delete').forEach(btn=>btn.addEventListener(
 }));
 
 async function sendForm(form, action, modal){
+  if (action === 'add') {
+    document.getElementById('add_bloques_json').value = JSON.stringify(getBloques(addBlocks));
+  }
+  if (action === 'edit') {
+    document.getElementById('edit_bloques_json').value = JSON.stringify(getBloques(editBlocks));
+  }
+
   const fd = new FormData(form);
   fd.append('action', action);
   const res = await fetch('manage_secciones.php',{method:'POST', body:fd});
@@ -149,6 +275,7 @@ async function sendForm(form, action, modal){
     setTimeout(()=>location.reload(),250);
   }
 }
+
 formAdd.addEventListener('submit',(e)=>{e.preventDefault(); sendForm(formAdd,'add','modalAdd');});
 formEdit.addEventListener('submit',(e)=>{e.preventDefault(); sendForm(formEdit,'edit','modalEdit');});
 formDelete.addEventListener('submit',(e)=>{e.preventDefault(); sendForm(formDelete,'delete','modalDelete');});
