@@ -414,3 +414,144 @@ select:focus-visible {
 .extra-block small {
   color: #5a6675;
 }
+
+.mensajes-app {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  gap: 20px;
+  padding: 24px;
+}
+
+.mensajes-sidebar {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: var(--admin-shadow);
+  border: 1px solid var(--admin-border);
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.chip-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid rgba(0, 72, 132, 0.18);
+  font-weight: 600;
+  background: #f5f8ff;
+}
+
+.chip.active {
+  background: linear-gradient(135deg, #2f5fb8, #004884);
+  color: #fff;
+}
+
+.chip.urgent {
+  border-color: rgba(225, 53, 53, 0.25);
+  color: #ab1525;
+}
+
+.busqueda-form {
+  display: grid;
+  gap: 8px;
+}
+
+.busqueda-form input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 72, 132, 0.2);
+  padding: 10px;
+}
+
+.stats-box {
+  border-radius: 12px;
+  padding: 12px;
+  background: #f7faff;
+  border: 1px solid rgba(0, 72, 132, 0.12);
+}
+
+.mensajes-list {
+  display: grid;
+  gap: 14px;
+}
+
+.mensaje-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--admin-shadow);
+  border: 1px solid var(--admin-border);
+}
+
+.mensaje-card.is-urgent {
+  border-left: 6px solid #e23f3f;
+  background: linear-gradient(180deg, #fff 0%, #fff9f9 100%);
+}
+
+.mensaje-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.mensaje-head h3 {
+  margin: 0;
+  color: var(--admin-primary);
+}
+
+.mensaje-head p {
+  margin: 4px 0 0;
+  color: var(--admin-muted);
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.badge-contacto {
+  background: #e8f1ff;
+  color: #134190;
+}
+
+.badge-urgente {
+  background: #ffe5e5;
+  color: #aa1323;
+}
+
+.mensaje-body {
+  background: #f7f9ff;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 72, 132, 0.1);
+}
+
+.mensaje-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+  color: var(--admin-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 920px) {
+  .mensajes-app {
+    grid-template-columns: 1fr;
+  }
+}
