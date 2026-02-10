@@ -36,6 +36,7 @@ if ($result && $result->num_rows > 0) {
     <div class="header-title-wrapper">
         <h1>🌐 ECO BELÉN - Panel Admin</h1>
     </div>
+    <a href="secciones.php" class="btn-view" style="position:absolute; top:20px; right:160px;">Secciones</a>
     <a href="logout.php" class="btn-view" style="position:absolute; top:20px; right:20px;">Cerrar sesión</a>
 </header>
 
@@ -166,24 +167,5 @@ if ($result && $result->num_rows > 0) {
 
 
 <script src="dashboard.js"></script>
-<script>
-// Cerrar modales
-document.getElementById("closeModalAdd").onclick = () => { document.getElementById("fileDataModal").style.display = "none"; };
-document.getElementById("closeModalEdit").onclick = () => { document.getElementById("editDataModal").style.display = "none"; };
-document.getElementById("closeModalDelete").onclick = () => { document.getElementById("deleteConfirmModal").style.display = "none"; };
-document.getElementById("closePdfModal").onclick = () => { document.getElementById("pdfModal").style.display = "none"; };
-
-// Abrir visor PDF
-document.querySelectorAll(".ver-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-        const pdfUrl = this.dataset.pdf;
-        const titulo = this.dataset.titulo;
-        document.getElementById("pdfViewer").src = pdfUrl;
-        document.getElementById("pdfTitle").innerText = "📖 " + titulo;
-        document.getElementById("downloadPdf").href = pdfUrl;
-        document.getElementById("pdfModal").style.display = "block";
-    });
-});
-</script>
 </body>
 </html>
