@@ -9,9 +9,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST["email"] ?? "");
     $tipo = trim($_POST["tipo"] ?? "");
     $mensaje = trim($_POST["mensaje"] ?? "");
+    $solicitaContacto = isset($_POST["solicita_contacto"]) ? 1 : 0;
+    $grado = trim($_POST["grado"] ?? "");
+    $urgente = isset($_POST["urgente"]) ? 1 : 0;
+    $nombreContacto = trim($_POST["nombre_contacto"] ?? "");
+
+    if ($nombreContacto === "" && $nombre !== "") {
+        $nombreContacto = $nombre;
+    }
 
     if ($nombre === "" || $email === "" || $tipo === "" || $mensaje === "") {
         $error = "Por favor completa todos los campos.";
+    } elseif ($solicitaContacto === 1 && ($grado === "" || $nombreContacto === "")) {
+        $error = "Si activas la opción de contacto debes indicar nombre y grado/curso.";
     } else {
         $create = "CREATE TABLE IF NOT EXISTS contactos (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -19,41 +29,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             email VARCHAR(180) NOT NULL,
             tipo VARCHAR(60) NOT NULL,
             mensaje TEXT NOT NULL,
+            solicita_contacto TINYINT(1) NOT NULL DEFAULT 0,
+            grado VARCHAR(80) DEFAULT NULL,
+            urgente TINYINT(1) NOT NULL DEFAULT 0,
+            nombre_contacto VARCHAR(120) DEFAULT NULL,
             creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         $conn->query($create);
 
-        $stmt = $conn->prepare("INSERT INTO contactos (nombre, email, tipo, mensaje) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $nombre, $email, $tipo, $mensaje);
+        $schemaUpdates = [
+            "ALTER TABLE contactos ADD COLUMN solicita_contacto TINYINT(1) NOT NULL DEFAULT 0",
+            "ALTER TABLE contactos ADD COLUMN grado VARCHAR(80) DEFAULT NULL",
+            "ALTER TABLE contactos ADD COLUMN urgente TINYINT(1) NOT NULL DEFAULT 0",
+            "ALTER TABLE contactos ADD COLUMN nombre_contacto VARCHAR(120) DEFAULT NULL"
+        ];
+
+        foreach ($schemaUpdates as $update) {
+            @$conn->query($update);
+        }
+
+        $stmt = $conn->prepare("INSERT INTO contactos (nombre, email, tipo, mensaje, solicita_contacto, grado, urgente, nombre_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssisis", $nombre, $email, $tipo, $mensaje, $solicitaContacto, $grado, $urgente, $nombreContacto);
         if ($stmt->execute()) {
-            $to = "contactoecobelen@gmail.com";
-            $subject = "Nuevo mensaje desde Contacto ECO Belén";
-            $safeNombre = str_replace(["\r", "\n"], ' ', $nombre);
-            $safeEmail = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : "no-valido";
-            $safeTipo = str_replace(["\r", "\n"], ' ', $tipo);
-
-            $body = "Se recibió un nuevo mensaje desde el formulario de contacto.\n\n";
-            $body .= "Nombre: {$safeNombre}\n";
-            $body .= "Correo: {$safeEmail}\n";
-            $body .= "Tipo: {$safeTipo}\n";
-            $body .= "Mensaje:\n{$mensaje}\n\n";
-            $body .= "Fecha servidor: " . date('Y-m-d H:i:s');
-
-            $headers = [
-                "MIME-Version: 1.0",
-                "Content-Type: text/plain; charset=UTF-8",
-                "From: Formulario ECO Belén <no-reply@colnubelen.edu.co>",
-                "Reply-To: {$safeEmail}",
-                "X-Mailer: PHP/" . phpversion(),
-            ];
-
-            $mailSent = @mail($to, $subject, $body, implode("\r\n", $headers));
-
-            if ($mailSent) {
-                $success = "Mensaje enviado correctamente. Gracias por contactarnos.";
-            } else {
-                $error = "Tu mensaje se guardó, pero no se pudo enviar al correo institucional en este momento.";
-            }
+            $success = "Mensaje guardado correctamente. El equipo lo revisará desde el panel administrativo.";
         } else {
             $error = "No se pudo enviar el mensaje. Inténtalo de nuevo.";
         }
@@ -205,6 +203,29 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             <label for="mensaje">Mensaje</label>
             <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje" required></textarea>
           </div>
+          <fieldset class="contact-preferences" style="margin-top:16px;">
+            <legend>Preferencias de seguimiento</legend>
+            <label class="inline-check" for="solicita_contacto">
+              <input type="checkbox" id="solicita_contacto" name="solicita_contacto" value="1">
+              Deseo que me contacten directamente
+            </label>
+            <label class="inline-check" for="urgente">
+              <input type="checkbox" id="urgente" name="urgente" value="1">
+              Marcar como urgente
+            </label>
+            <div class="contact-extra-fields" id="contact-extra-fields" hidden>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="nombre_contacto">Nombre para contacto</label>
+                  <input type="text" id="nombre_contacto" name="nombre_contacto" placeholder="Se completa con tu nombre">
+                </div>
+                <div class="form-field">
+                  <label for="grado">Grado o curso</label>
+                  <input type="text" id="grado" name="grado" placeholder="Ejemplo: 10-B o 7°A">
+                </div>
+              </div>
+            </div>
+          </fieldset>
           <div class="form-actions">
             <button type="submit" class="btn-primary">Enviar mensaje</button>
           </div>
@@ -295,6 +316,34 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       <button class="footer-modal-close" type="button" data-close-modal>Cerrar</button>
     </div>
   </div>
+
+  <script>
+    const solicitaContacto = document.getElementById('solicita_contacto');
+    const extraFields = document.getElementById('contact-extra-fields');
+    const nombrePrincipal = document.getElementById('nombre');
+    const nombreContacto = document.getElementById('nombre_contacto');
+    const grado = document.getElementById('grado');
+
+    function syncNombreContacto() {
+      if (!nombreContacto.value.trim()) {
+        nombreContacto.value = nombrePrincipal.value.trim();
+      }
+    }
+
+    function toggleContactFields() {
+      const active = solicitaContacto.checked;
+      extraFields.hidden = !active;
+      grado.required = active;
+      nombreContacto.required = active;
+      if (active) {
+        syncNombreContacto();
+      }
+    }
+
+    solicitaContacto.addEventListener('change', toggleContactFields);
+    nombrePrincipal.addEventListener('input', syncNombreContacto);
+    toggleContactFields();
+  </script>
 
   <script src="script.js"></script>
 </body>
