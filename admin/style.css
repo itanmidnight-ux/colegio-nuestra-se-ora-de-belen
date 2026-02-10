@@ -84,6 +84,20 @@ select:focus-visible {
   color: #fff;
 }
 
+
+.header-actions {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.header-actions .btn-view {
+  position: static;
+}
+
 .header-logo {
   width: 30px;
   height: 30px;
@@ -482,6 +496,52 @@ select:focus-visible {
   gap: 14px;
 }
 
+
+.flash-message {
+  background: #e8f4ff;
+  color: #0f417f;
+  border: 1px solid rgba(0, 72, 132, 0.2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.bulk-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+}
+
+.check-all-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.bulk-delete-btn {
+  font-weight: 700;
+}
+
+.mensaje-select-row {
+  margin-bottom: 8px;
+}
+
+.mensaje-select-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--admin-muted);
+}
+
 .mensaje-card {
   background: #ffffff;
   border-radius: 18px;
@@ -553,5 +613,23 @@ select:focus-visible {
 @media (max-width: 920px) {
   .mensajes-app {
     grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    position: static;
+    margin-top: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .public-header {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .bulk-actions {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

@@ -42,8 +42,11 @@ if ($res) {
 <a class="corner-logo" href="dashboard.php" aria-label="Ir al panel"><img src="escudo.png" alt="Escudo"></a>
 <header class="public-header">
   <div class="header-title-wrapper"><h1>🧩 Gestión de Secciones</h1></div>
-  <a href="dashboard.php" class="btn-view" style="position:absolute; top:20px; right:180px;">Periódicos</a>
-  <a href="logout.php" class="btn-view" style="position:absolute; top:20px; right:20px;">Cerrar sesión</a>
+  <nav class="header-actions" aria-label="Navegación del panel admin">
+    <a href="dashboard.php" class="btn-view">Periódicos</a>
+    <a href="contactos.php" class="btn-view">Mensajes</a>
+    <a href="logout.php" class="btn-view">Cerrar sesión</a>
+  </nav>
 </header>
 
 <main class="admin-layout" style="display:block; max-width:1100px; margin:20px auto;">
