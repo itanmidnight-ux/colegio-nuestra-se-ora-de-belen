@@ -69,25 +69,23 @@ img {
     box-shadow: 0 12px 30px rgba(0, 22, 55, 0.35);
 }
 
-.corner-logo {
+.corner-logos {
     position: fixed;
-    top: 14px;
-    right: 16px;
+    top: 12px;
+    right: 14px;
     z-index: 1200;
+    display: flex;
+    gap: 8px;
+}
+
+.corner-logos img {
     width: var(--logo-size);
     height: var(--logo-size);
     background: #ffffff;
     border-radius: 14px;
     padding: 6px;
     box-shadow: var(--shadow-medium);
-    display: grid;
-    place-items: center;
     border: 1px solid rgba(0, 72, 132, 0.12);
-}
-
-.corner-logo img {
-    width: 100%;
-    height: 100%;
     object-fit: contain;
 }
 
@@ -579,7 +577,8 @@ img {
 
 .periodico-thumb {
     width: 100%;
-    height: 170px;
+    aspect-ratio: 3 / 4;
+    min-height: 300px;
     border-radius: 14px;
     border: 1px solid rgba(0, 72, 132, 0.12);
     overflow: hidden;
@@ -587,17 +586,21 @@ img {
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-.periodico-thumb object,
+.periodico-thumb img,
+.periodico-thumb embed,
 .periodico-thumb iframe {
     display: block;
 }
 
-.periodico-thumb object,
+.periodico-thumb img,
+.periodico-thumb img,
+.periodico-thumb embed,
 .periodico-thumb iframe {
     width: 100%;
     height: 100%;
     border: none;
     pointer-events: none;
+    object-fit: cover;
 }
 
 .periodico-buttons {
@@ -1073,14 +1076,11 @@ img {
     padding: 30px 24px 50px;
 }
 
-<<<<<<< codex/improve-and-redesign-public-directory-pages-wbugh2
 .pdf-container iframe {
     width: 100%;
     min-height: 60vh;
 }
 
-=======
->>>>>>> main
 .periodico-header {
     display: flex;
     flex-wrap: wrap;
@@ -1190,8 +1190,9 @@ img {
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid rgba(0, 72, 132, 0.12);
-    min-height: 60vh;
+    min-height: 85vh;
     box-shadow: var(--shadow-light);
+    background: #f1f5fb;
 }
 
 .anim-card {
@@ -1210,6 +1211,73 @@ img {
     }
 }
 
+
+.secciones-list {
+    grid-template-columns: 1fr;
+    gap: 26px;
+}
+
+.seccion-card {
+    padding: 28px;
+}
+
+.seccion-title {
+    font-family: 'Merriweather', serif;
+    font-size: clamp(1.9rem, 2.8vw, 2.6rem);
+    line-height: 1.15;
+    margin: 4px 0 8px;
+    color: var(--primary-color);
+}
+
+.seccion-descripcion {
+    font-size: 1.05rem;
+    color: var(--muted-text);
+    font-weight: 600;
+}
+
+.seccion-thumb {
+    min-height: 340px;
+}
+
+.seccion-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #fff;
+}
+
+.seccion-extra-content {
+    margin-top: 12px;
+    display: grid;
+    gap: 14px;
+}
+
+.seccion-thumb-extra {
+    min-height: 280px;
+}
+
+.extra-texto {
+    background: #f7fbff;
+    border-left: 4px solid #0b5fb8;
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+.video-embed-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-embed-wrapper iframe,
+.video-embed-wrapper video {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 @media (max-width: 1000px) {
     .public-content {
         grid-template-columns: 1fr;
@@ -1221,25 +1289,63 @@ img {
 }
 
 @media (max-width: 700px) {
+    .top-bar {
+        font-size: 0.72rem;
+        padding: 5px 10px;
+    }
+
     .header-inner {
+        padding: 10px 12px;
+        gap: 10px;
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .main-nav {
-        width: 100%;
-        gap: 12px;
+    .brand-name {
+        font-size: 0.9rem;
     }
 
-    .corner-logo {
-        width: 42px;
-        height: 42px;
-        top: 10px;
-        right: 10px;
+    .brand-sub {
+        font-size: 0.76rem;
+    }
+
+    .main-nav {
+        width: 100%;
+        gap: 10px;
+        font-size: 0.86rem;
+    }
+
+    .main-nav a {
+        padding: 2px 2px;
+    }
+
+    .corner-logos {
+        top: 8px;
+        right: 8px;
+        gap: 6px;
+    }
+
+    .corner-logos img {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        padding: 4px;
     }
 
     .periodico-buttons {
         grid-template-columns: 1fr;
+    }
+
+    .periodico-thumb {
+        min-height: 240px;
+    }
+
+    .seccion-thumb {
+        min-height: 250px;
+    }
+
+    .seccion-title {
+        font-size: 1.6rem;
     }
 
     .contact-shell {

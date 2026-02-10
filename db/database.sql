@@ -4,6 +4,7 @@
 DROP TABLE IF EXISTS comentarios;
 DROP TABLE IF EXISTS periodicos;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS secciones_periodico;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,6 +25,20 @@ CREATE TABLE IF NOT EXISTS periodicos (
     publicado_en DATE,
     usuario_id INT,
     FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE IF NOT EXISTS secciones_periodico (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(180) NOT NULL,
+    descripcion TEXT,
+    contenido LONGTEXT,
+    imagen VARCHAR(255),
+    contenido_extra LONGTEXT,
+    orden_visual INT DEFAULT 0,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS comentarios (

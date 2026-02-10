@@ -27,8 +27,9 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="corner-logo" href="index.php" aria-label="Ir al inicio">
+  <a class="corner-logos" href="index.php" aria-label="Ir al inicio">
     <img src="escudo.jpeg" alt="Escudo Institucional">
+    <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
   </a>
 
   <header class="public-header" id="inicio">
@@ -41,6 +42,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       <nav class="main-nav">
         <a href="index.php">Inicio</a>
         <a href="#archivo">Archivo</a>
+        <a href="secciones-periodico.php">Secciones</a>
         <a href="contacto.php">Contacto</a>
       </nav>
     </div>
@@ -102,9 +104,8 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
                 echo "<article class='periodico-card anim-card' style='--delay: {$delayStyle}s'>
                         <a class='card-link' href='view.php?id={$row['id']}'>Abrir</a>
                         <div class='periodico-thumb'>
-                          <object data='../uploads/{$row['archivo_pdf']}#page=1&zoom=70' type='application/pdf'>
-                            <iframe src='../uploads/{$row['archivo_pdf']}#page=1&zoom=70'></iframe>
-                          </object>
+                          <embed src='../uploads/{$row['archivo_pdf']}#page=1&view=FitH&toolbar=0&navpanes=0&scrollbar=0' type='application/pdf'>
+                          <iframe src='../uploads/{$row['archivo_pdf']}#page=1&view=FitH&toolbar=0&navpanes=0&scrollbar=0' title='Portada de {$row['titulo']}'></iframe>
                         </div>
                         <div>
                           <h3>{$row['titulo']}</h3>
