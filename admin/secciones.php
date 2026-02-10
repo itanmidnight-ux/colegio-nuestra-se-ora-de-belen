@@ -193,7 +193,7 @@ function crearBloque({ tipo = 'texto', valor = '' } = {}) {
     } else {
       labelUpload.style.display = 'none';
       fileInput.style.display = 'none';
-      help.textContent = 'Pega un enlace embebible de YouTube/Vimeo u otra plataforma.';
+      help.textContent = 'Pega un enlace de YouTube/Vimeo (watch, share o embed) u otra plataforma compatible.';
     }
   };
 
