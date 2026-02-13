@@ -6,6 +6,16 @@ if (!isset($_SESSION['user_id'])) {
 }
 require_once "../config.php";
 
+function ensureColumnExists(mysqli $conn, string $table, string $column, string $definition): void
+{
+    $safeTable = $conn->real_escape_string($table);
+    $safeColumn = $conn->real_escape_string($column);
+    $exists = $conn->query("SHOW COLUMNS FROM {$safeTable} LIKE '{$safeColumn}'");
+    if ($exists && $exists->num_rows === 0) {
+        $conn->query("ALTER TABLE {$safeTable} ADD COLUMN {$column} {$definition}");
+    }
+}
+
 $conn->query("CREATE TABLE IF NOT EXISTS secciones_periodico (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(180) NOT NULL,
@@ -18,7 +28,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS secciones_periodico (
     actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-$conn->query("ALTER TABLE secciones_periodico ADD COLUMN IF NOT EXISTS bloques_extra LONGTEXT AFTER imagen");
+ensureColumnExists($conn, 'secciones_periodico', 'bloques_extra', 'LONGTEXT AFTER imagen');
 
 function normalizar_bloques($raw)
 {
