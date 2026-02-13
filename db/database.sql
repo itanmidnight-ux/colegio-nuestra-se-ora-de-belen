@@ -1,5 +1,8 @@
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS comentarios;
+DROP TABLE IF EXISTS encuesta_respuestas;
+DROP TABLE IF EXISTS encuesta_opciones;
+DROP TABLE IF EXISTS encuestas;
 DROP TABLE IF EXISTS periodicos;
 DROP TABLE IF EXISTS secciones_periodico;
 DROP TABLE IF EXISTS contactos;
@@ -69,6 +72,40 @@ CREATE TABLE IF NOT EXISTS comentarios (
     CONSTRAINT fk_comentario_periodico FOREIGN KEY (periodico_id) REFERENCES periodicos(id) ON DELETE CASCADE,
     INDEX idx_comentarios_periodico (periodico_id),
     INDEX idx_comentarios_fecha (creado_en)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS encuestas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(180) NOT NULL,
+    pregunta TEXT NOT NULL,
+    ubicacion ENUM('on_entry','on_header_nav','on_virtual_read_end','on_download','on_sections_menu') NOT NULL,
+    activa TINYINT(1) NOT NULL DEFAULT 1,
+    creada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    finalizada_en TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_encuestas_ubicacion (ubicacion),
+    INDEX idx_encuestas_activa (activa)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS encuesta_opciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    encuesta_id INT NOT NULL,
+    texto VARCHAR(255) NOT NULL,
+    orden_visual INT DEFAULT 0,
+    CONSTRAINT fk_opciones_encuesta FOREIGN KEY (encuesta_id) REFERENCES encuestas(id) ON DELETE CASCADE,
+    INDEX idx_opciones_encuesta (encuesta_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS encuesta_respuestas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    encuesta_id INT NOT NULL,
+    opcion_id INT NOT NULL,
+    session_token VARCHAR(120) DEFAULT NULL,
+    contexto VARCHAR(80) DEFAULT NULL,
+    respondida_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_respuestas_encuesta FOREIGN KEY (encuesta_id) REFERENCES encuestas(id) ON DELETE CASCADE,
+    CONSTRAINT fk_respuestas_opcion FOREIGN KEY (opcion_id) REFERENCES encuesta_opciones(id) ON DELETE CASCADE,
+    INDEX idx_respuestas_encuesta (encuesta_id),
+    INDEX idx_respuestas_opcion (opcion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO users (nombre, email, password, rol)

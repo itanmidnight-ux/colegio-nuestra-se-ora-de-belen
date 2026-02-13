@@ -44,7 +44,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <link href="style.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
 </head>
-<body class="pdf-viewer-page">
+<body class="pdf-viewer-page" data-survey-page="view">
   <a class="corner-logos" href="index.php" aria-label="Ir al inicio">
     <img src="escudo.jpeg" alt="Escudo Institucional">
     <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
@@ -97,13 +97,16 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
           <span>Director: <?php echo htmlspecialchars($periodico_principal['director']); ?></span>
         </div>
         <div class="periodico-actions-inline">
-          <a class="btn-primary" href="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>" download>Descargar edición</a>
+          <a class="btn-primary survey-download-link" href="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>" download>Descargar edición</a>
           <a class="btn-outline" href="periodicos.php">Volver al archivo</a>
         </div>
       </div>
 
       <div class="pdf-container">
         <iframe src="../uploads/<?php echo htmlspecialchars($periodico_principal['archivo_pdf']); ?>#zoom=page-fit" frameborder="0" title="Periódico completo"></iframe>
+      </div>
+      <div class="reader-end-wrap">
+        <button type="button" class="btn-primary" id="finishReadingBtn">Terminé de leer</button>
       </div>
     </section>
 
