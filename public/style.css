@@ -92,12 +92,30 @@ img {
 .header-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 18px 20px 22px;
+    padding: 14px 20px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 18px;
     flex-wrap: wrap;
+}
+
+.header-logos {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header-logos img {
+    width: clamp(44px, 5vw, 62px);
+    height: clamp(44px, 5vw, 62px);
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(0, 72, 132, 0.12);
+    object-fit: contain;
 }
 
 .brand-text {
@@ -396,6 +414,95 @@ img {
     border-radius: 999px;
     font-size: 0.85rem;
     font-weight: 600;
+    color: var(--primary-color);
+}
+
+
+.news-layout-section {
+    padding: 62px 20px;
+    background: linear-gradient(180deg, #f9fbff, #f1f5fc);
+}
+
+.news-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+    gap: 20px;
+}
+
+.news-feature,
+.news-side-card,
+.news-tile {
+    background: #fff;
+    border: 1px solid rgba(0, 72, 132, 0.1);
+    border-radius: 18px;
+    box-shadow: var(--shadow-light);
+}
+
+.news-feature {
+    overflow: hidden;
+}
+
+.news-media {
+    height: clamp(220px, 34vw, 380px);
+}
+
+.news-media img,
+.news-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.news-copy {
+    padding: 20px;
+}
+
+.news-copy h3 {
+    margin: 8px 0 10px;
+    color: var(--primary-color);
+    font-family: 'Merriweather', serif;
+}
+
+.news-subgrid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.news-tile {
+    overflow: hidden;
+}
+
+.news-tile img {
+    height: 150px;
+}
+
+.news-tile h4,
+.news-tile p {
+    margin: 0;
+    padding: 10px 14px 0;
+}
+
+.news-tile p {
+    padding-bottom: 14px;
+    color: var(--muted-text);
+}
+
+.news-sidebar {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+
+.news-side-card {
+    padding: 18px;
+}
+
+.news-side-card h4 {
+    margin-top: 0;
     color: var(--primary-color);
 }
 
@@ -1228,6 +1335,13 @@ img {
         align-items: flex-start;
     }
 
+    .header-logos img {
+        width: 40px;
+        height: 40px;
+        padding: 4px;
+        border-radius: 10px;
+    }
+
     .brand-name {
         font-size: 0.9rem;
     }
@@ -1257,6 +1371,10 @@ img {
         height: 34px;
         border-radius: 10px;
         padding: 4px;
+    }
+
+    .news-layout {
+        grid-template-columns: 1fr;
     }
 
     .periodico-buttons {

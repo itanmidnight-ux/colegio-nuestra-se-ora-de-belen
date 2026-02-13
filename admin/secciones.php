@@ -89,7 +89,9 @@ if ($res) {
     <label>Descripción corta</label><textarea name="descripcion"></textarea>
     <label>Contenido principal</label><textarea name="contenido"></textarea>
     <label>Orden visual</label><input type="number" name="orden_visual" value="0">
-    <label>Imagen de portada de la sección</label><input type="file" id="add_file" accept="image/jpeg,image/png,image/webp">
+    <label>Imagen de portada de la sección (subir archivo)</label><input type="file" id="add_file" accept="image/jpeg,image/png,image/webp">
+    <label>... o pegar ubicación (URL o ruta)</label><input type="text" id="add_imagen_url" placeholder="https://... o ../uploads/mi-imagen.jpg">
+    <small id="add_image_status"></small>
 
     <div class="extras-panel">
       <h4>Contenido adicional</h4>
@@ -113,7 +115,9 @@ if ($res) {
     <label>Descripción corta</label><textarea name="descripcion" id="edit_descripcion"></textarea>
     <label>Contenido principal</label><textarea name="contenido" id="edit_contenido"></textarea>
     <label>Orden visual</label><input type="number" name="orden_visual" id="edit_orden" value="0">
-    <label>Reemplazar imagen de portada</label><input type="file" id="edit_file" accept="image/jpeg,image/png,image/webp">
+    <label>Reemplazar imagen de portada (subir archivo)</label><input type="file" id="edit_file" accept="image/jpeg,image/png,image/webp">
+    <label>... o actualizar ubicación (URL o ruta)</label><input type="text" id="edit_imagen_url" placeholder="https://... o ../uploads/mi-imagen.jpg">
+    <small id="edit_image_status"></small>
 
     <div class="extras-panel">
       <h4>Contenido adicional</h4>
@@ -148,12 +152,25 @@ async function uploadImage(input, hiddenId){
   fd.append('imagen', input.files[0]);
   const res = await fetch('manage_secciones.php',{method:'POST', body:fd});
   const out = await res.json();
-  if(out.status==='ok') document.getElementById(hiddenId).value = out.filename;
-  else alert(out.message || 'No se pudo subir imagen');
+  if(out.status==='ok') {
+    document.getElementById(hiddenId).value = out.filename;
+    const statusId = hiddenId === 'add_imagen' ? 'add_image_status' : 'edit_image_status';
+    const statusEl = document.getElementById(statusId);
+    if (statusEl) statusEl.textContent = `Imagen subida: ${out.filename}`;
+  } else {
+    alert(out.message || 'No se pudo subir imagen');
+  }
 }
 
 document.getElementById('add_file').addEventListener('change',()=>uploadImage(document.getElementById('add_file'),'add_imagen'));
 document.getElementById('edit_file').addEventListener('change',()=>uploadImage(document.getElementById('edit_file'),'edit_imagen'));
+
+document.getElementById('add_imagen_url').addEventListener('input',(e)=>{
+  document.getElementById('add_imagen').value = e.target.value.trim();
+});
+document.getElementById('edit_imagen_url').addEventListener('input',(e)=>{
+  document.getElementById('edit_imagen').value = e.target.value.trim();
+});
 
 function crearBloque({ tipo = 'texto', valor = '' } = {}) {
   const wrapper = document.createElement('div');
@@ -246,6 +263,7 @@ document.querySelectorAll('.btn-open-edit').forEach(btn=>btn.addEventListener('c
   edit_descripcion.value = btn.dataset.descripcion;
   edit_contenido.value = btn.dataset.contenido;
   edit_imagen.value = btn.dataset.imagen;
+  edit_imagen_url.value = btn.dataset.imagen;
   edit_orden.value = btn.dataset.orden;
 
   let bloques = [];
