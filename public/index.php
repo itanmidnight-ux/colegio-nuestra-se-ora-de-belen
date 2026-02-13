@@ -76,7 +76,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         <div class="hero-text">
           <p class="hero-kicker">Institución Pública · Mixta · Cúcuta</p>
           <h1 id="hero-title">Periódico escolar con identidad, ciencia y cultura</h1>
-          <p class="hero-lead">Inspirados por el sitio institucional de Colnubelen, organizamos la portada en bloques para destacar noticias, secciones y ediciones del periódico escolar ECO BELÉN con una experiencia moderna y ordenada.</p>
+          <p class="hero-lead">ECO BELÉN es la vitrina periodística de nuestra comunidad educativa: una plataforma para narrar logros estudiantiles, iniciativas académicas, vida cultural, proyectos ambientales y voces juveniles con una estética editorial contemporánea.</p>
           <div class="hero-actions">
             <a class="btn-primary" href="periodicos.php">Explorar periódicos</a>
             <a class="btn-outline" href="secciones-periodico.php">Ver secciones</a>
@@ -107,6 +107,36 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+
+    <section class="about-project" aria-labelledby="about-project-title">
+      <div class="section-header">
+        <h2 id="about-project-title">Proyecto periódico escolar ECO BELÉN</h2>
+        <p>Una plataforma pública para mostrar, publicar y preservar las ediciones del periódico escolar.</p>
+      </div>
+      <div class="about-project-grid">
+        <article class="about-project-card anim-card" style="--delay: 0.05s">
+          <h3>Descripción del proyecto</h3>
+          <p>ECO BELÉN nace como un proyecto pedagógico y comunicativo de la Institución Educativa Nuestra Señora de Belén para fortalecer la lectura crítica, la escritura argumentativa y el liderazgo estudiantil. Este portal reúne artículos, crónicas, entrevistas, columnas de opinión, muestras artísticas y reportajes sobre ciencia, deporte, cultura y convivencia escolar, permitiendo que cada edición del periódico sea visible para estudiantes, familias, egresados y comunidad en general.</p>
+          <p>Además de publicar contenidos, la página funciona como archivo histórico del colegio: conserva las producciones editoriales por año, facilita la consulta de secciones temáticas y promueve una ciudadanía digital responsable al dar contexto, fuentes y lenguaje periodístico de calidad. Con esta iniciativa, el periódico deja de ser una publicación aislada para convertirse en un espacio vivo de participación, memoria y construcción colectiva.</p>
+        </article>
+        <article class="about-project-card about-project-highlights anim-card" style="--delay: 0.1s">
+          <h3>Enfoque editorial y comunitario</h3>
+          <ul class="info-list">
+            <li><strong>Formación:</strong> fortalece competencias comunicativas y pensamiento crítico.</li>
+            <li><strong>Participación:</strong> visibiliza la voz de estudiantes y docentes.</li>
+            <li><strong>Memoria:</strong> organiza y conserva periódicos escolares en línea.</li>
+            <li><strong>Proyección:</strong> conecta a la comunidad con procesos y logros institucionales.</li>
+          </ul>
+          <div class="panel-tags">
+            <span>Crónicas escolares</span>
+            <span>Investigación juvenil</span>
+            <span>Arte y cultura</span>
+            <span>Opinión estudiantil</span>
+          </div>
+        </article>
       </div>
     </section>
 

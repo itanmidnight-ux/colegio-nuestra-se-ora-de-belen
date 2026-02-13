@@ -1638,3 +1638,47 @@ img {
 .survey-option:hover {
     background: #eaf1ff;
 }
+
+.about-project {
+    padding: 24px 20px 10px;
+}
+
+.about-project-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 22px;
+}
+
+.about-project-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 72, 132, 0.12);
+    box-shadow: var(--shadow-light);
+    padding: 24px;
+}
+
+.about-project-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.about-project-card p {
+    color: var(--muted-text);
+    margin-bottom: 14px;
+}
+
+.about-project-highlights {
+    background: linear-gradient(180deg, #fbfdff 0%, #f2f7ff 100%);
+}
+
+.about-project-highlights .info-list {
+    margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+    .about-project-grid {
+        grid-template-columns: 1fr;
+    }
+}
