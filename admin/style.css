@@ -633,3 +633,145 @@ select:focus-visible {
     align-items: flex-start;
   }
 }
+
+/* Encuestas */
+.survey-admin-layout {
+  align-items: start;
+}
+
+.survey-side-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.survey-side-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.survey-side-head h3 {
+  margin: 0;
+  color: var(--admin-primary);
+}
+
+.survey-side-copy {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 0.92rem;
+}
+
+.survey-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 280px);
+  gap: 16px;
+}
+
+.survey-actions-panel {
+  position: static;
+  top: auto;
+  max-height: none;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #cc3344, #9f1d2d);
+}
+
+.survey-list {
+  max-height: 58vh;
+  overflow-y: auto;
+}
+
+.survey-list-item {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.survey-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 72, 132, 0.12);
+  border-color: rgba(0, 72, 132, 0.2);
+}
+
+.survey-list-item.is-selected {
+  border-color: rgba(0, 72, 132, 0.35);
+  background: linear-gradient(180deg, #f5f9ff 0%, #edf4ff 100%);
+}
+
+.survey-empty {
+  margin: 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f7f9ff;
+  border: 1px dashed rgba(0, 72, 132, 0.2);
+  color: var(--admin-muted);
+}
+
+.survey-modal-content {
+  max-width: 720px;
+}
+
+.survey-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.survey-modal-close {
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  background: #edf4ff;
+  color: var(--admin-primary);
+}
+
+.survey-form {
+  display: grid;
+  gap: 12px;
+}
+
+.survey-form label {
+  font-weight: 600;
+  color: var(--admin-primary-dark);
+}
+
+.survey-form input,
+.survey-form textarea,
+.survey-form select {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border);
+  padding: 10px;
+  font-family: inherit;
+  font-size: 0.97rem;
+}
+
+.survey-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.survey-form-actions {
+  padding-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .survey-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .survey-side-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -26,127 +26,225 @@ if (!isset($_SESSION['user_id'])) {
   </nav>
 </header>
 
-<main class="admin-layout">
-  <aside class="side-panel">
-    <h3>Nueva encuesta</h3>
-    <form id="surveyFormCreate">
-      <label>Título</label>
-      <input name="titulo" required>
-      <label>Pregunta</label>
-      <textarea name="pregunta" required></textarea>
-      <label>Ubicación</label>
-      <select name="ubicacion" required>
-        <option value="on_entry">Al entrar a la página</option>
-        <option value="on_header_nav">Al moverse por menú del encabezado</option>
-        <option value="on_virtual_read_end">Al terminar lectura virtual</option>
-        <option value="on_download">Al descargar periódico</option>
-        <option value="on_sections_menu">Al ir al menú de secciones</option>
-      </select>
-      <label>Posibles respuestas (1 por línea)</label>
-      <textarea name="opciones" placeholder="Sí\nNo\nTal vez" required></textarea>
-      <button class="btn-view" type="submit">Guardar encuesta</button>
-    </form>
-    <hr>
-    <h3>Encuestas creadas</h3>
-    <div id="surveyList" class="mensajes-list"></div>
+<main class="admin-layout survey-admin-layout">
+  <aside class="side-panel survey-side-panel">
+    <div class="survey-side-head">
+      <h3>Encuestas creadas</h3>
+      <button class="btn-view" id="newSurveyBtn" type="button">+ Crear nueva encuesta</button>
+    </div>
+    <p class="survey-side-copy">Administra encuestas activas por ubicación, revisa resultados en tiempo real y descarga reportes.</p>
+    <div id="surveyList" class="mensajes-list survey-list"></div>
   </aside>
 
-  <section class="main-periodico-display">
+  <section class="main-periodico-display survey-dashboard">
     <h2 id="panelTitle">Selecciona una encuesta</h2>
-    <div style="display:grid; grid-template-columns: 1fr 270px; gap:16px;">
+    <div class="survey-dashboard-grid">
       <div>
         <canvas id="pieChart" height="180"></canvas>
         <canvas id="barChart" height="140" style="margin-top:16px"></canvas>
         <div id="statsTable" class="card" style="margin-top:16px"></div>
       </div>
-      <div class="side-panel" style="position:static; top:auto; max-height:none;">
+      <div class="side-panel survey-actions-panel">
         <h4>Acciones</h4>
         <button class="btn-view" id="editBtn" type="button">Editar encuesta</button>
         <button class="btn-view" id="finishBtn" type="button">Terminar encuesta</button>
         <button class="btn-view" id="saveBtn" type="button">Guardar datos</button>
-        <button class="btn-view" id="deleteBtn" type="button" style="background:#b41627;">Eliminar encuesta</button>
+        <button class="btn-view btn-danger" id="deleteBtn" type="button">Eliminar encuesta</button>
         <a class="btn-view" id="downloadBtn" href="#">Descargar datos en PDF</a>
       </div>
     </div>
   </section>
 </main>
 
+<div class="modal" id="surveyModal" aria-hidden="true">
+  <div class="modal-content survey-modal-content">
+    <div class="survey-modal-header">
+      <h3 id="surveyModalTitle">Nueva encuesta</h3>
+      <button type="button" class="survey-modal-close" id="closeSurveyModal" aria-label="Cerrar">×</button>
+    </div>
+
+    <form id="surveyFormCreate" class="survey-form">
+      <label for="surveyTitulo">Título</label>
+      <input id="surveyTitulo" name="titulo" required>
+
+      <label for="surveyPregunta">Pregunta</label>
+      <textarea id="surveyPregunta" name="pregunta" required></textarea>
+
+      <label for="surveyUbicacion">Ubicación</label>
+      <select id="surveyUbicacion" name="ubicacion" required>
+        <option value="on_entry">Al entrar a la página</option>
+        <option value="on_header_nav">Al moverse por menú del encabezado</option>
+        <option value="on_virtual_read_end">Al terminar lectura virtual</option>
+        <option value="on_download">Al descargar periódico</option>
+        <option value="on_sections_menu">Al ir al menú de secciones</option>
+      </select>
+
+      <label for="surveyOpciones">Posibles respuestas (1 por línea)</label>
+      <textarea id="surveyOpciones" name="opciones" placeholder="Sí&#10;No&#10;Tal vez" required></textarea>
+
+      <div class="survey-form-actions">
+        <button class="btn-view" type="submit" id="surveySubmitBtn">Guardar encuesta</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 let selectedId = null;
 let pieChart, barChart;
+let editingSurveyId = null;
 const list = document.getElementById('surveyList');
+const modal = document.getElementById('surveyModal');
+const form = document.getElementById('surveyFormCreate');
+const modalTitle = document.getElementById('surveyModalTitle');
+const submitBtn = document.getElementById('surveySubmitBtn');
+
+function openModal(editMode = false) {
+  modal.style.display = 'block';
+  modal.setAttribute('aria-hidden', 'false');
+  modalTitle.textContent = editMode ? 'Editar encuesta' : 'Nueva encuesta';
+  submitBtn.textContent = editMode ? 'Guardar cambios' : 'Guardar encuesta';
+}
+
+function closeModal() {
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden', 'true');
+  editingSurveyId = null;
+  form.reset();
+}
+
+function locationLabel(code){
+  const map = {
+    on_entry: 'Entrada',
+    on_header_nav: 'Menú',
+    on_virtual_read_end: 'Lectura',
+    on_download: 'Descarga',
+    on_sections_menu: 'Secciones'
+  };
+  return map[code] || code;
+}
 
 async function loadList(){
   const res = await fetch('encuestas_api.php?action=list');
   const json = await res.json();
   list.innerHTML = '';
+  if (!json.items || json.items.length === 0) {
+    list.innerHTML = '<p class="survey-empty">No hay encuestas creadas todavía.</p>';
+    return;
+  }
   json.items.forEach(it => {
     const div = document.createElement('div');
-    div.className = 'list-item';
-    div.innerHTML = `<strong>${it.titulo}</strong><span>${it.ubicacion} · ${it.activa == 1 ? 'Activa':'Finalizada'}</span>`;
+    div.className = 'list-item survey-list-item';
+    if (selectedId === Number(it.id)) {
+      div.classList.add('is-selected');
+    }
+    div.innerHTML = `
+      <strong>${it.titulo}</strong>
+      <span>${locationLabel(it.ubicacion)} · ${it.activa == 1 ? 'Activa' : 'Finalizada'}</span>
+    `;
     div.onclick = ()=> loadDetail(it.id);
     list.appendChild(div);
   });
 }
 
 async function loadDetail(id){
-  selectedId = id;
+  selectedId = Number(id);
   const res = await fetch('encuestas_api.php?action=detail&id=' + id);
   const json = await res.json();
-  document.getElementById('panelTitle').textContent = json.encuesta.titulo;
+  if (json.status !== 'ok') {
+    alert(json.message || 'No se pudo cargar la encuesta');
+    return;
+  }
+
+  document.getElementById('panelTitle').textContent = `${json.encuesta.titulo} · ${locationLabel(json.encuesta.ubicacion)}`;
   document.getElementById('downloadBtn').href = 'encuestas_api.php?action=download_pdf&id=' + id;
 
-  const labels = json.stats.map(x=>x.texto);
-  const values = json.stats.map(x=>Number(x.total));
+  const labels = json.stats.map(x => x.texto);
+  const values = json.stats.map(x => Number(x.total));
 
   pieChart?.destroy();
   barChart?.destroy();
-  pieChart = new Chart(document.getElementById('pieChart'), {type:'pie', data:{labels, datasets:[{data:values, backgroundColor:['#3366cc','#dc3912','#ff9900','#109618','#990099','#0099c6']}]}});
-  barChart = new Chart(document.getElementById('barChart'), {type:'bar', data:{labels, datasets:[{label:'Respuestas', data:values, backgroundColor:'#3366cc'}]}});
+  pieChart = new Chart(document.getElementById('pieChart'), {
+    type:'pie',
+    data:{labels, datasets:[{data:values, backgroundColor:['#3366cc','#dc3912','#ff9900','#109618','#990099','#0099c6']}]} 
+  });
+  barChart = new Chart(document.getElementById('barChart'), {
+    type:'bar',
+    data:{labels, datasets:[{label:'Respuestas', data:values, backgroundColor:'#3366cc'}]},
+    options:{plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{precision:0}}}}
+  });
 
-  let total = values.reduce((a,b)=>a+b,0);
+  const total = values.reduce((a,b)=>a+b,0);
   document.getElementById('statsTable').innerHTML = '<h3>Estadísticas</h3>' + json.stats.map(r=>{
     const p = total ? ((r.total*100)/total).toFixed(1) : '0.0';
     return `<p><strong>${r.texto}</strong>: ${r.total} respuestas (${p}%)</p>`;
   }).join('');
+
+  loadList();
 }
 
-document.getElementById('surveyFormCreate').addEventListener('submit', async (e)=>{
+form.addEventListener('submit', async (e)=>{
   e.preventDefault();
-  const fd = new FormData(e.target);
-  fd.append('action','create');
+  const fd = new FormData(form);
+  fd.append('action', editingSurveyId ? 'save' : 'create');
+  if (editingSurveyId) fd.append('id', editingSurveyId);
+
   const res = await fetch('encuestas_api.php', {method:'POST', body:fd});
   const json = await res.json();
-  if(json.status==='ok'){ e.target.reset(); loadList(); }
-  else alert(json.message);
+  if(json.status === 'ok'){
+    closeModal();
+    loadList();
+    if (editingSurveyId) {
+      loadDetail(editingSurveyId);
+    }
+  } else {
+    alert(json.message || 'No se pudo guardar la encuesta');
+  }
 });
 
+document.getElementById('newSurveyBtn').onclick = ()=> {
+  editingSurveyId = null;
+  form.reset();
+  openModal(false);
+};
+document.getElementById('closeSurveyModal').onclick = closeModal;
+window.addEventListener('click', (e)=> { if (e.target === modal) closeModal(); });
+window.addEventListener('keydown', (e)=> { if (e.key === 'Escape' && modal.style.display === 'block') closeModal(); });
+
 document.getElementById('finishBtn').onclick = async ()=>{
-  if(!selectedId) return;
+  if(!selectedId) return alert('Primero selecciona una encuesta.');
   const fd = new FormData(); fd.append('action','finish'); fd.append('id',selectedId);
   await fetch('encuestas_api.php',{method:'POST',body:fd});
   loadList();
+  loadDetail(selectedId);
 };
+
 document.getElementById('deleteBtn').onclick = async ()=>{
   if(!selectedId || !confirm('¿Eliminar encuesta?')) return;
   const fd = new FormData(); fd.append('action','delete'); fd.append('id',selectedId);
   await fetch('encuestas_api.php',{method:'POST',body:fd});
-  selectedId=null; loadList();
+  selectedId = null;
+  document.getElementById('panelTitle').textContent = 'Selecciona una encuesta';
+  document.getElementById('statsTable').innerHTML = '';
+  pieChart?.destroy();
+  barChart?.destroy();
+  loadList();
 };
-document.getElementById('saveBtn').onclick = ()=> alert('Los datos se guardan automáticamente en base de datos.');
+
+document.getElementById('saveBtn').onclick = ()=> alert('Los datos se guardan automáticamente en la base de datos.');
+
 document.getElementById('editBtn').onclick = async ()=>{
-  if(!selectedId) return;
+  if(!selectedId) return alert('Primero selecciona una encuesta.');
   const res = await fetch('encuestas_api.php?action=detail&id=' + selectedId);
   const json = await res.json();
-  const titulo = prompt('Editar título:', json.encuesta.titulo); if(!titulo) return;
-  const pregunta = prompt('Editar pregunta:', json.encuesta.pregunta); if(!pregunta) return;
-  const ubicacion = prompt('Ubicación (on_entry,on_header_nav,on_virtual_read_end,on_download,on_sections_menu):', json.encuesta.ubicacion); if(!ubicacion) return;
-  const opciones = prompt('Opciones (separa con |):', json.opciones.map(o=>o.texto).join('|')); if(!opciones) return;
-  const fd = new FormData();
-  fd.append('action','save'); fd.append('id', selectedId); fd.append('titulo',titulo); fd.append('pregunta',pregunta); fd.append('ubicacion',ubicacion); fd.append('opciones',opciones.split('|').join('\n'));
-  const saveRes = await fetch('encuestas_api.php',{method:'POST',body:fd});
-  const saveJson = await saveRes.json();
-  if(saveJson.status==='ok'){ loadDetail(selectedId); loadList(); }
+  if (json.status !== 'ok') return alert(json.message || 'No se pudo cargar');
+
+  editingSurveyId = String(selectedId);
+  form.titulo.value = json.encuesta.titulo;
+  form.pregunta.value = json.encuesta.pregunta;
+  form.ubicacion.value = json.encuesta.ubicacion;
+  form.opciones.value = json.opciones.map(o => o.texto).join('\n');
+  openModal(true);
 };
 
 loadList();

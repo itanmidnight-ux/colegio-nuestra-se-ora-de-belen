@@ -1,5 +1,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS comentarios;
+DROP TABLE IF EXISTS encuesta_metricas;
+DROP TABLE IF EXISTS encuesta_historial;
 DROP TABLE IF EXISTS encuesta_respuestas;
 DROP TABLE IF EXISTS encuesta_opciones;
 DROP TABLE IF EXISTS encuestas;
@@ -106,6 +108,33 @@ CREATE TABLE IF NOT EXISTS encuesta_respuestas (
     CONSTRAINT fk_respuestas_opcion FOREIGN KEY (opcion_id) REFERENCES encuesta_opciones(id) ON DELETE CASCADE,
     INDEX idx_respuestas_encuesta (encuesta_id),
     INDEX idx_respuestas_opcion (opcion_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS encuesta_historial (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    encuesta_id INT NULL,
+    accion ENUM('create','update','finish','delete','answer') NOT NULL,
+    payload_json LONGTEXT,
+    usuario_id INT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_historial_encuesta FOREIGN KEY (encuesta_id) REFERENCES encuestas(id) ON DELETE SET NULL,
+    CONSTRAINT fk_historial_usuario FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_historial_encuesta (encuesta_id),
+    INDEX idx_historial_accion (accion),
+    INDEX idx_historial_fecha (creado_en)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS encuesta_metricas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    encuesta_id INT NOT NULL,
+    opcion_id INT NOT NULL,
+    total_respuestas INT NOT NULL DEFAULT 0,
+    porcentaje DECIMAL(5,2) NOT NULL DEFAULT 0,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_metricas_encuesta FOREIGN KEY (encuesta_id) REFERENCES encuestas(id) ON DELETE CASCADE,
+    CONSTRAINT fk_metricas_opcion FOREIGN KEY (opcion_id) REFERENCES encuesta_opciones(id) ON DELETE CASCADE,
+    UNIQUE KEY uq_metricas_encuesta_opcion (encuesta_id, opcion_id),
+    INDEX idx_metricas_encuesta (encuesta_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO users (nombre, email, password, rol)
