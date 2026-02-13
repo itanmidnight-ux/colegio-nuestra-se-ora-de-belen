@@ -87,6 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcion = trim($_POST['descripcion'] ?? '');
         $contenido = trim($_POST['contenido'] ?? '');
         $imagen = trim($_POST['imagen'] ?? '');
+        if (strpos($imagen, '../uploads/') === 0) {
+            $imagen = basename($imagen);
+        }
         $orden = intval($_POST['orden_visual'] ?? 0);
         $bloques_extra = normalizar_bloques($_POST['bloques_json'] ?? '[]');
 
@@ -115,6 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcion = trim($_POST['descripcion'] ?? '');
         $contenido = trim($_POST['contenido'] ?? '');
         $imagen = trim($_POST['imagen'] ?? '');
+        if (strpos($imagen, '../uploads/') === 0) {
+            $imagen = basename($imagen);
+        }
         $orden = intval($_POST['orden_visual'] ?? 0);
         $bloques_extra = normalizar_bloques($_POST['bloques_json'] ?? '[]');
 
@@ -151,8 +157,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->fetch();
         $stmt->close();
 
-        if (!empty($imagen) && file_exists("../uploads/" . $imagen)) {
-            unlink("../uploads/" . $imagen);
+        if (!empty($imagen)) {
+            $imagenLocal = basename($imagen);
+            $rutaImagen = "../uploads/" . $imagenLocal;
+            if (file_exists($rutaImagen)) {
+                unlink($rutaImagen);
+            }
         }
 
         $stmt = $conn->prepare("DELETE FROM secciones_periodico WHERE id = ?");

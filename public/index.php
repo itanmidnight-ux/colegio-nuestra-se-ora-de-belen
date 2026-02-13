@@ -10,6 +10,27 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
+$secciones_array = [];
+$seccionesResult = $conn->query("SELECT id, titulo, descripcion, imagen, contenido FROM secciones_periodico ORDER BY orden_visual ASC, creado_en DESC LIMIT 6");
+if ($seccionesResult && $seccionesResult->num_rows > 0) {
+    while ($row = $seccionesResult->fetch_assoc()) {
+        $secciones_array[] = $row;
+    }
+}
+
+function portada_src($imagen)
+{
+    if (!$imagen) {
+        return null;
+    }
+
+    if (preg_match('/^https?:\/\//i', $imagen) || strpos($imagen, '../uploads/') === 0 || strpos($imagen, 'uploads/') === 0) {
+        return $imagen;
+    }
+
+    return "../uploads/" . ltrim($imagen, '/');
+}
+
 $months = [
     "enero", "febrero", "marzo", "abril", "mayo", "junio",
     "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
@@ -27,14 +48,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="corner-logos" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.jpeg" alt="Escudo Institucional">
-    <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
-  </a>
-
   <header class="public-header" id="inicio">
     <div class="top-bar">Institución Educativa Nuestra Señora de Belén · Cúcuta</div>
     <div class="header-inner">
+      <a class="header-logos" href="index.php" aria-label="Ir al inicio">
+        <img src="escudo.jpeg" alt="Escudo Institucional">
+        <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
+      </a>
       <div class="brand-text">
         <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
         <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
@@ -42,9 +62,9 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       <nav class="main-nav">
         <a href="#inicio">Inicio</a>
         <a href="#institucion">Institución</a>
-        <a href="#sedes">Sedes</a>
+        <a href="#secciones">Secciones</a>
         <a href="periodicos.php">Periódicos</a>
-        <a href="secciones-periodico.php">Secciones</a>
+        <a href="secciones-periodico.php">Edición completa</a>
         <a href="contacto.php">Contacto</a>
       </nav>
     </div>
@@ -55,11 +75,11 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       <div class="hero-grid">
         <div class="hero-text">
           <p class="hero-kicker">Institución Pública · Mixta · Cúcuta</p>
-          <h1 id="hero-title">Bienvenidos a la Institución Educativa Nuestra Señora de Belén</h1>
-          <p class="hero-lead">Somos una comunidad educativa que impulsa la ciencia, la convivencia y el servicio. Acompañamos a nuestros estudiantes desde la primera infancia hasta la media técnica para transformar el entorno con valores y excelencia.</p>
+          <h1 id="hero-title">Periódico escolar con identidad, ciencia y cultura</h1>
+          <p class="hero-lead">Inspirados por el sitio institucional de Colnubelen, organizamos la portada en bloques para destacar noticias, secciones y ediciones del periódico escolar ECO BELÉN con una experiencia moderna y ordenada.</p>
           <div class="hero-actions">
             <a class="btn-primary" href="periodicos.php">Explorar periódicos</a>
-            <a class="btn-outline" href="contacto.php">Agenda una visita</a>
+            <a class="btn-outline" href="secciones-periodico.php">Ver secciones</a>
           </div>
           <div class="hero-metrics">
             <div class="metric-card">
@@ -79,7 +99,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         <div class="hero-media">
           <div class="hero-card anim-card" style="--delay: 0.1s">
             <h2>Identidad institucional</h2>
-            <p>Formamos niños y jóvenes con principios éticos, sociales y culturales, apoyados en la ciencia y la tecnología, para impulsar su crecimiento personal y social.</p>
+            <p>Formamos niños y jóvenes con principios éticos, sociales y culturales, apoyados en la ciencia y la tecnología para transformar su entorno.</p>
             <div class="tag-list">
               <span>Excelencia</span>
               <span>Innovación</span>
@@ -93,7 +113,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
     <section class="spotlight-section" id="institucion" aria-labelledby="institucion-title">
       <div class="section-header">
         <h2 id="institucion-title">Nuestra institución</h2>
-        <p>Inspirados en la identidad Colnubelen, fortalecemos la formación académica y humana con una visión futurista.</p>
+        <p>Inspirados en la identidad Colnubelen, fortalecemos la formación académica y humana con visión futurista.</p>
       </div>
       <div class="spotlight-grid">
         <article class="spotlight-card anim-card" style="--delay: 0.05s">
@@ -101,14 +121,14 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
           <ul class="info-list">
             <li><strong>Dirección:</strong> Calle 26 No. 27-60, Barrio Belén.</li>
             <li><strong>Municipio:</strong> Cúcuta - Norte de Santander.</li>
-            <li><strong>Niveles:</strong> Primera infancia, básica primaria, básica secundaria, media académica, media técnica y aceleración del aprendizaje.</li>
+            <li><strong>Niveles:</strong> Primera infancia, básica primaria, secundaria, media académica y técnica.</li>
             <li><strong>Rector:</strong> Carlos Luis Villamizar Ramírez.</li>
           </ul>
         </article>
         <article class="spotlight-card anim-card" style="--delay: 0.1s">
           <h3>Horizonte institucional</h3>
           <div class="spotlight-highlight">
-            <p>Ser líderes en formación académica y técnica, con valores humanos sólidos y crecimiento cualitativo de la comunidad educativa, apoyados en ciencia, cultura y tecnología.</p>
+            <p>Ser líderes en formación académica y técnica, con valores humanos sólidos y crecimiento cualitativo de la comunidad educativa.</p>
           </div>
           <div class="panel-tags">
             <span>Calidad</span>
@@ -118,68 +138,70 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         </article>
         <article class="spotlight-card anim-card" style="--delay: 0.15s">
           <h3>Símbolos institucionales</h3>
-          <p>Conoce los elementos que representan nuestra historia y visión en la comunidad educativa Colnubelen.</p>
+          <p>Conoce los elementos que representan nuestra historia y visión institucional.</p>
           <a class="btn-outline" href="https://www.colnubelen.edu.co/simbolos.php" target="_blank" rel="noreferrer">Ver símbolos</a>
         </article>
       </div>
     </section>
 
-    <section class="sedes-section" id="sedes" aria-labelledby="sedes-title">
+    <section class="news-layout-section" id="secciones" aria-labelledby="secciones-title">
       <div class="section-header">
-        <h2 id="sedes-title">Sedes educativas</h2>
-        <p>Presencia estratégica para acompañar a nuestras familias en diferentes sectores de Cúcuta.</p>
+        <h2 id="secciones-title">Secciones destacadas del periódico</h2>
+        <p>Portada editorial en formato de bloques para una lectura rápida y visual.</p>
       </div>
-      <div class="sedes-grid">
-        <article class="sede-card anim-card" style="--delay: 0.05s">
-          <h4>Sede principal</h4>
-          <p>Calle 26 No. 27-60, Barrio Belén.</p>
-        </article>
-        <article class="sede-card anim-card" style="--delay: 0.1s">
-          <h4>Belén No. 23</h4>
-          <p>Calle 25 #27-40.</p>
-        </article>
-        <article class="sede-card anim-card" style="--delay: 0.15s">
-          <h4>Belén No. 21</h4>
-          <p>Calle 25 #27-10.</p>
-        </article>
-        <article class="sede-card anim-card" style="--delay: 0.2s">
-          <h4>Rudesindo Soto</h4>
-          <p>AV 30 #17-22.</p>
-        </article>
-      </div>
-    </section>
+      <div class="news-layout">
+        <div class="news-main">
+          <?php if (!empty($secciones_array)): ?>
+            <?php $principal = $secciones_array[0]; ?>
+            <article class="news-feature anim-card" style="--delay: 0.05s">
+              <?php if (portada_src($principal['imagen'])): ?>
+                <div class="news-media">
+                  <img src="<?= htmlspecialchars(portada_src($principal['imagen'])) ?>" alt="Sección <?= htmlspecialchars($principal['titulo']) ?>">
+                </div>
+              <?php endif; ?>
+              <div class="news-copy">
+                <p class="periodico-kicker">Sección principal</p>
+                <h3><?= htmlspecialchars($principal['titulo']) ?></h3>
+                <p><?= htmlspecialchars($principal['descripcion'] ?: mb_substr(strip_tags($principal['contenido']), 0, 180) . '...') ?></p>
+                <a class="btn-primary" href="secciones-periodico.php">Leer sección</a>
+              </div>
+            </article>
+          <?php else: ?>
+            <article class="news-feature anim-card"><p>No hay secciones creadas aún.</p></article>
+          <?php endif; ?>
 
-    <section class="services-section" aria-labelledby="services-title">
-      <div class="section-header">
-        <h2 id="services-title">Canales institucionales</h2>
-        <p>Accede a los servicios que acompañan la vida escolar y el bienestar de la comunidad.</p>
-      </div>
-      <div class="services-grid">
-        <div class="service-card anim-card" style="--delay: 0.05s">
-          <img src="https://www.colnubelen.edu.co/images/botones/c1.png" alt="Cuadro de honor">
-          <span>Cuadro de honor</span>
+          <div class="news-subgrid">
+            <?php foreach (array_slice($secciones_array, 1, 3) as $i => $sec): ?>
+              <article class="news-tile anim-card" style="--delay: <?= number_format(0.1 + ($i * 0.05), 2) ?>s">
+                <?php if (portada_src($sec['imagen'])): ?>
+                  <img src="<?= htmlspecialchars(portada_src($sec['imagen'])) ?>" alt="<?= htmlspecialchars($sec['titulo']) ?>">
+                <?php endif; ?>
+                <h4><?= htmlspecialchars($sec['titulo']) ?></h4>
+                <p><?= htmlspecialchars(mb_substr($sec['descripcion'] ?: strip_tags($sec['contenido']), 0, 100)) ?>...</p>
+              </article>
+            <?php endforeach; ?>
+          </div>
         </div>
-        <div class="service-card anim-card" style="--delay: 0.1s">
-          <img src="https://www.colnubelen.edu.co/images/botones/e1.png" alt="Egresados">
-          <span>Egresados</span>
-        </div>
-        <div class="service-card anim-card" style="--delay: 0.15s">
-          <img src="https://www.colnubelen.edu.co/images/botones/p1.png" alt="PQRS">
-          <span>PQRS</span>
-        </div>
-      </div>
-    </section>
 
-    <section class="avisos-section" aria-labelledby="avisos-title">
-      <div class="section-header">
-        <h2 id="avisos-title">Avisos importantes</h2>
-        <p>Mensajes de interés para estudiantes, familias y comunidad educativa.</p>
-      </div>
-      <div class="avisos-card anim-card" style="--delay: 0.05s">
-        <p>Consulta los comunicados vigentes y mantente informado sobre actividades académicas y culturales.</p>
-        <div class="contact-map" style="margin-top: 16px;">
-          <iframe src="https://www.webcolegios.com/mensaje_principal.php?idcolegio=8" title="Mensajes de interés"></iframe>
-        </div>
+        <aside class="news-sidebar">
+          <article class="news-side-card anim-card" style="--delay: 0.1s">
+            <h4>Accesos rápidos</h4>
+            <ul class="info-list">
+              <li><a href="periodicos.php">Archivo de periódicos</a></li>
+              <li><a href="secciones-periodico.php">Todas las secciones</a></li>
+              <li><a href="contacto.php">Contacto institucional</a></li>
+            </ul>
+          </article>
+          <article class="news-side-card anim-card" style="--delay: 0.15s">
+            <h4>Canales institucionales</h4>
+            <div class="panel-tags">
+              <span>Cuadro de honor</span>
+              <span>Egresados</span>
+              <span>PQRS</span>
+              <span>Convivencia</span>
+            </div>
+          </article>
+        </aside>
       </div>
     </section>
 
@@ -236,33 +258,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
             Rector: Carlos Luis Villamizar Ramírez
           </li>
         </ul>
-        <div class="footer-social">
-          <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook">f</a>
-          <a href="https://wa.me/" target="_blank" rel="noreferrer" aria-label="WhatsApp">w</a>
-          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">i</a>
-        </div>
       </div>
       <div class="footer-col">
         <h4>Atención al Público</h4>
         <ul class="footer-list">
-          <li>
-            <span class="footer-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
-            </span>
-            Horario de atención: Jornada mañana, tarde y única
-          </li>
-          <li>
-            <span class="footer-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4 1h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 8a16 16 0 0 0 6 6l.8-.9a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"></path></svg>
-            </span>
-            6075920077
-          </li>
-          <li>
-            <span class="footer-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
-            </span>
-            <button class="btn-outline" type="button" data-open-modal="correoModal">colnubelen@semcucuta.gov.co</button>
-          </li>
+          <li><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>Horario de atención: Jornada mañana, tarde y única</li>
+          <li><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4 1h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 8a16 16 0 0 0 6 6l.8-.9a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z"></path></svg></span>6075920077</li>
+          <li><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></span><button class="btn-outline" type="button" data-open-modal="correoModal">colnubelen@semcucuta.gov.co</button></li>
         </ul>
         <div class="footer-clock">
           <div class="clock-box" id="footerClock"></div>
@@ -274,10 +276,6 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
         <div class="footer-links">
           <a href="https://www.webcolegios.com/" target="_blank" rel="noreferrer">[webcolegios]</a>
           <a href="https://www.colnubelen.edu.co/" target="_blank" rel="noreferrer">[Mapa de Sitio]</a>
-        </div>
-        <div class="footer-links">
-          <a href="https://www.colnubelen.edu.co/sedes.php" target="_blank" rel="noreferrer">Sedes</a>
-          <a href="https://www.colnubelen.edu.co/pqr.php" target="_blank" rel="noreferrer">PQRS</a>
         </div>
       </div>
     </div>

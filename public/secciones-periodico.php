@@ -26,6 +26,19 @@ function normalizar_url($url)
     return '../uploads/' . ltrim($url, '/');
 }
 
+
+function resolver_imagen_seccion($valor)
+{
+    $valor = trim((string)$valor);
+    if ($valor === '') {
+        return '';
+    }
+    if (preg_match('/^https?:\/\//i', $valor) || strpos($valor, '../uploads/') === 0 || strpos($valor, 'uploads/') === 0) {
+        return $valor;
+    }
+    return '../uploads/' . ltrim($valor, '/');
+}
+
 function obtener_url_embed_video($url)
 {
     $url = trim((string)$url);
@@ -139,7 +152,7 @@ function obtener_url_embed_video($url)
 
             <?php if (!empty($sec['imagen'])): ?>
               <div class="periodico-thumb section-thumb">
-                <img src="../uploads/<?= htmlspecialchars($sec['imagen']) ?>" alt="Imagen sección <?= htmlspecialchars($sec['titulo']) ?>" class="section-image-main">
+                <img src="<?= htmlspecialchars(resolver_imagen_seccion($sec['imagen'])) ?>" alt="Imagen sección <?= htmlspecialchars($sec['titulo']) ?>" class="section-image-main">
               </div>
             <?php endif; ?>
             <p class="section-description"><?= htmlspecialchars($sec['descripcion']) ?></p>
