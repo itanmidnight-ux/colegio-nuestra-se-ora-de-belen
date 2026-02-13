@@ -1561,3 +1561,80 @@ img {
     padding-top: 10px;
     border-top: 1px dashed rgba(0, 72, 132, 0.2);
 }
+
+.reader-end-wrap {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pdf-container iframe {
+    min-height: clamp(480px, 85vh, 1100px);
+}
+
+.pdf-container {
+    min-height: clamp(480px, 85vh, 1100px);
+}
+
+.survey-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 3000;
+}
+
+.survey-modal.active {
+    display: block;
+}
+
+.survey-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 20, 42, 0.58);
+    backdrop-filter: blur(1px);
+}
+
+.survey-card {
+    position: relative;
+    width: min(92vw, 520px);
+    margin: 10vh auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 28px 58px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 72, 132, 0.15);
+}
+
+.survey-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: #9aa4b3;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.82;
+}
+
+.survey-options {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.survey-option {
+    border: 1px solid rgba(0, 72, 132, 0.18);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #f7f9ff;
+    cursor: pointer;
+    text-align: left;
+}
+
+.survey-option:hover {
+    background: #eaf1ff;
+}

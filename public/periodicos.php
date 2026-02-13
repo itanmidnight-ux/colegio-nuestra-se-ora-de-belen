@@ -26,7 +26,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <link href="style.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body data-survey-page="periodicos">
   <a class="corner-logos" href="index.php" aria-label="Ir al inicio">
     <img src="escudo.jpeg" alt="Escudo Institucional">
     <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
@@ -112,7 +112,7 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
                           <p>Dir: {$row['director']}</p>
                         </div>
                         <div class='periodico-buttons'>
-                          <a class='btn-primary' href='../uploads/{$row['archivo_pdf']}' download>Descargar</a>
+                          <a class='btn-primary survey-download-link' href='../uploads/{$row['archivo_pdf']}' download>Descargar</a>
                           <a class='btn-primary' href='view.php?id={$row['id']}'>Lectura en línea</a>
                         </div>
                       </article>";
