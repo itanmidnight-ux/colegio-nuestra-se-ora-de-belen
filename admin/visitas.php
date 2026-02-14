@@ -27,194 +27,249 @@ if (!isset($_SESSION['user_id'])) {
   </nav>
 </header>
 
-<main class="admin-layout">
-  <aside class="side-panel">
-    <h3>Resumen general</h3>
-    <div id="visitSummary" class="card">Cargando...</div>
+<main class="admin-layout visitas-layout">
+  <aside class="side-panel survey-side-panel">
+    <div>
+      <h3>Resumen general</h3>
+      <p class="survey-side-copy">Vista rápida de comportamiento, secciones destacadas y actividad diaria del sitio público.</p>
+    </div>
+    <div id="visitSummary" class="card visitas-summary-card">Cargando...</div>
   </aside>
 
-  <section class="main-periodico-display">
-    <h2>Carrusel de visitas diarias por sección</h2>
-    <div class="visit-carousel-controls">
-      <button type="button" class="btn-view" id="prevDayBtn">← Día anterior</button>
-      <div id="currentDayLabel" class="visit-day-label">Sin datos</div>
-      <button type="button" class="btn-view" id="nextDayBtn">Día siguiente →</button>
-    </div>
-    <div class="survey-chart-card" style="height:360px; max-width:none;">
-      <canvas id="dailyVisitsChart"></canvas>
-    </div>
-    <div id="dayDetail" class="card survey-stats-card"></div>
+  <section class="main-periodico-display visitas-main-panel">
+    <h2>Resumen de visitas</h2>
 
-    <div class="visit-carousel">
-      <h2>Carrusel de visitas brutas por dispositivo</h2>
-      <div class="visit-carousel-controls">
-        <button type="button" class="btn-view" id="prevRawBtn">← Día anterior</button>
-        <div id="currentRawLabel" class="visit-day-label">Sin datos</div>
-        <button type="button" class="btn-view" id="nextRawBtn">Día siguiente →</button>
-      </div>
-      <div class="survey-chart-card" style="height:320px; max-width:none;">
-        <canvas id="rawVisitsChart"></canvas>
-      </div>
-      <div id="rawDetail" class="card survey-stats-card"></div>
+    <div id="kpiRow" class="visitas-kpi-row"></div>
+
+    <div class="visitas-grid-compact">
+      <article class="survey-chart-card visitas-chart-card visitas-chart-small">
+        <h3>Sesiones por día (sitio público)</h3>
+        <canvas id="trendVisitsChart"></canvas>
+      </article>
+      <article class="survey-chart-card visitas-chart-card visitas-chart-small">
+        <h3>Canales por sección (acumulado)</h3>
+        <canvas id="sectionsShareChart"></canvas>
+      </article>
     </div>
+
+    <article class="survey-chart-card visitas-chart-card visitas-chart-medium">
+      <h3>Visitas brutas semanales del sitio público</h3>
+      <p class="visitas-chart-copy">Incluye todos los días de la semana (lunes a domingo), mostrando fecha exacta y total de dispositivos únicos detectados.</p>
+      <canvas id="rawVisitsChart"></canvas>
+      <div id="rawDetail" class="card survey-stats-card visitas-detail-card"></div>
+    </article>
   </section>
 </main>
 
 <script>
-let days = [];
-let dayIndex = 0;
-let visitsChart;
+const WEEKDAY_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const WEEKDAY_LONG = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
-let rawDays = [];
-let rawIndex = 0;
+let trendChart;
+let sectionsChart;
 let rawChart;
 
-async function loadSummary() {
-  const res = await fetch('visitas_api.php?action=summary');
-  const json = await res.json();
-  if (json.status !== 'ok') return;
-
-  const s = json.summary;
-  const sectionsHtml = (s.secciones || []).slice(0, 8).map(item => `<li><strong>${item.seccion}</strong>: ${item.total}</li>`).join('');
-  document.getElementById('visitSummary').innerHTML = `
-    <p><strong>Total de visitas:</strong> ${s.total_visitas}</p>
-    <p><strong>Días con registro:</strong> ${s.total_dias}</p>
-    <p><strong>Dispositivos registrados:</strong> ${s.total_dispositivos_registrados || 0}</p>
-    <p><strong>Último día registrado:</strong> ${s.ultima_fecha || '—'}</p>
-    <h4>Top de secciones</h4>
-    <ul>${sectionsHtml || '<li>No hay datos todavía.</li>'}</ul>
-  `;
+function formatFullDate(isoDate) {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  const localDate = new Date(year, month - 1, day);
+  const weekday = WEEKDAY_LONG[localDate.getDay()];
+  return `${weekday}, ${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
 }
 
-async function loadCarousel() {
-  const res = await fetch('visitas_api.php?action=daily_carousel');
-  const json = await res.json();
-  if (json.status !== 'ok') return;
-  days = json.items || [];
+function formatShortDate(isoDate) {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  const localDate = new Date(year, month - 1, day);
+  return `${WEEKDAY_SHORT[localDate.getDay()]} ${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}`;
+}
 
-  if (!days.length) {
-    document.getElementById('currentDayLabel').textContent = 'Sin datos aún';
-    document.getElementById('dayDetail').innerHTML = '<p>No hay registros diarios disponibles todavía.</p>';
+function getWeekRangeFromDate(dateIso) {
+  const [year, month, day] = dateIso.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  const dayOfWeek = date.getDay();
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+  const monday = new Date(date);
+  monday.setDate(date.getDate() + mondayOffset);
+
+  const week = [];
+  for (let i = 0; i < 7; i += 1) {
+    const current = new Date(monday);
+    current.setDate(monday.getDate() + i);
+    const y = current.getFullYear();
+    const m = String(current.getMonth() + 1).padStart(2, '0');
+    const d = String(current.getDate()).padStart(2, '0');
+    week.push(`${y}-${m}-${d}`);
+  }
+
+  return week;
+}
+
+function buildKpiCards(summary) {
+  const avgPerDay = summary.total_dias ? (summary.total_visitas / summary.total_dias).toFixed(1) : '0';
+  return [
+    { label: 'Sesiones totales', value: Number(summary.total_visitas).toLocaleString('es-CO') },
+    { label: 'Días con registro', value: Number(summary.total_dias).toLocaleString('es-CO') },
+    { label: 'Promedio por día', value: Number(avgPerDay).toLocaleString('es-CO') },
+    { label: 'Dispositivos únicos', value: Number(summary.total_dispositivos_registrados || 0).toLocaleString('es-CO') }
+  ];
+}
+
+async function loadSummary() {
+  const [summaryRes, dailyRes, rawRes] = await Promise.all([
+    fetch('visitas_api.php?action=summary'),
+    fetch('visitas_api.php?action=daily_carousel'),
+    fetch('visitas_api.php?action=raw_devices_carousel'),
+  ]);
+
+  const [summaryJson, dailyJson, rawJson] = await Promise.all([
+    summaryRes.json(),
+    dailyRes.json(),
+    rawRes.json(),
+  ]);
+
+  if (summaryJson.status !== 'ok' || dailyJson.status !== 'ok' || rawJson.status !== 'ok') {
+    document.getElementById('visitSummary').innerHTML = '<p>No se pudieron cargar las estadísticas.</p>';
     return;
   }
 
-  dayIndex = days.length - 1;
-  renderDay();
+  renderSummary(summaryJson.summary);
+  renderTrend(dailyJson.items || []);
+  renderSectionShare(summaryJson.summary.secciones || []);
+  renderRawWeekly(rawJson.items || []);
 }
 
-function renderDay() {
-  const day = days[dayIndex];
-  document.getElementById('currentDayLabel').textContent = `${day.fecha} · Total: ${day.total_visitas}`;
+function renderSummary(summary) {
+  const sectionsHtml = (summary.secciones || []).slice(0, 6).map(item =>
+    `<li><strong>${item.seccion}</strong><span>${Number(item.total).toLocaleString('es-CO')}</span></li>`).join('');
 
-  const labels = day.secciones.map(s => s.seccion);
-  const values = day.secciones.map(s => Number(s.visitas));
+  document.getElementById('visitSummary').innerHTML = `
+    <p><strong>Último registro:</strong> ${summary.ultima_fecha ? formatFullDate(summary.ultima_fecha) : '—'}</p>
+    <h4>Top de secciones</h4>
+    <ul class="visitas-ranking">${sectionsHtml || '<li>Sin datos por ahora.</li>'}</ul>
+  `;
 
-  visitsChart?.destroy();
-  visitsChart = new Chart(document.getElementById('dailyVisitsChart'), {
-    type: 'bar',
+  const kpis = buildKpiCards(summary);
+  document.getElementById('kpiRow').innerHTML = kpis.map(kpi => `
+    <article class="visitas-kpi-card">
+      <p>${kpi.label}</p>
+      <strong>${kpi.value}</strong>
+    </article>
+  `).join('');
+}
+
+function renderTrend(days) {
+  const labels = days.map(item => formatShortDate(item.fecha));
+  const values = days.map(item => Number(item.total_visitas));
+
+  trendChart?.destroy();
+  trendChart = new Chart(document.getElementById('trendVisitsChart'), {
+    type: 'line',
     data: {
       labels,
       datasets: [{
-        label: 'Visitas por sección',
+        label: 'Sesiones',
         data: values,
-        backgroundColor: '#2f5fb8',
-        borderRadius: 8,
+        borderColor: '#1d9bc7',
+        backgroundColor: 'rgba(29, 155, 199, 0.20)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 3,
+        pointHoverRadius: 5,
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } },
+        x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 } },
+      }
     }
   });
-
-  document.getElementById('dayDetail').innerHTML =
-    '<h3>Detalle del día</h3>' +
-    (day.secciones.length
-      ? day.secciones.map(r => `<p><strong>${r.seccion}</strong>: ${r.visitas} visita(s)</p>`).join('')
-      : '<p>No hubo visitas registradas para este día.</p>');
-
-  document.getElementById('prevDayBtn').disabled = dayIndex === 0;
-  document.getElementById('nextDayBtn').disabled = dayIndex === days.length - 1;
 }
 
-async function loadRawDevicesCarousel() {
-  const res = await fetch('visitas_api.php?action=raw_devices_carousel');
-  const json = await res.json();
-  if (json.status !== 'ok') return;
-  rawDays = json.items || [];
+function renderSectionShare(sections) {
+  const labels = sections.slice(0, 6).map(s => s.seccion);
+  const values = sections.slice(0, 6).map(s => Number(s.total));
+  const palette = ['#1d9bc7', '#9ccc65', '#ffb74d', '#ef5350', '#8e8cd8', '#4db6ac'];
 
+  sectionsChart?.destroy();
+  sectionsChart = new Chart(document.getElementById('sectionsShareChart'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: palette,
+        borderWidth: 1,
+        borderColor: '#f8fbff',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: { boxWidth: 12, usePointStyle: true },
+        },
+      }
+    }
+  });
+}
+
+function renderRawWeekly(rawDays) {
+  const detail = document.getElementById('rawDetail');
   if (!rawDays.length) {
-    document.getElementById('currentRawLabel').textContent = 'Sin datos aún';
-    document.getElementById('rawDetail').innerHTML = '<p>Aún no hay visitas brutas por dispositivos para mostrar.</p>';
+    detail.innerHTML = '<p>Aún no hay visitas brutas para mostrar.</p>';
     return;
   }
 
-  rawIndex = rawDays.length - 1;
-  renderRawDay();
-}
+  const mapByDate = new Map(rawDays.map(item => [item.fecha, Number(item.dispositivos_brutos)]));
+  const lastDate = rawDays[rawDays.length - 1].fecha;
+  const fullWeek = getWeekRangeFromDate(lastDate);
 
-function renderRawDay() {
-  const day = rawDays[rawIndex];
-  document.getElementById('currentRawLabel').textContent = `${day.fecha} · Dispositivos: ${day.dispositivos_brutos}`;
+  const labels = fullWeek.map(formatShortDate);
+  const values = fullWeek.map(date => mapByDate.get(date) || 0);
 
   rawChart?.destroy();
   rawChart = new Chart(document.getElementById('rawVisitsChart'), {
-    type: 'bar',
+    type: 'line',
     data: {
-      labels: [day.fecha],
+      labels,
       datasets: [{
-        label: 'Visitas brutas (dispositivos)',
-        data: [Number(day.dispositivos_brutos)],
-        backgroundColor: '#f2c600',
-        borderRadius: 10,
+        label: 'Visitas brutas por día',
+        data: values,
+        borderColor: '#8cc5e9',
+        backgroundColor: 'rgba(140, 197, 233, 0.45)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#4e9dd6',
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: true } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      plugins: {
+        legend: { display: true },
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } },
+        x: { ticks: { maxRotation: 0, autoSkip: false } },
+      }
     }
   });
 
-  document.getElementById('rawDetail').innerHTML = `<h3>Detalle de visitas brutas</h3><p><strong>${day.fecha}</strong>: ${day.dispositivos_brutos} dispositivo(s) únicos detectados.</p>`;
-  document.getElementById('prevRawBtn').disabled = rawIndex === 0;
-  document.getElementById('nextRawBtn').disabled = rawIndex === rawDays.length - 1;
+  detail.innerHTML = '<h3>Detalle semanal exacto</h3>' + fullWeek.map((date, index) =>
+    `<p><strong>${formatFullDate(date)}</strong>: ${values[index]} visita(s) bruta(s)</p>`).join('');
 }
 
-document.getElementById('prevDayBtn').addEventListener('click', () => {
-  if (dayIndex > 0) {
-    dayIndex -= 1;
-    renderDay();
-  }
-});
-
-document.getElementById('nextDayBtn').addEventListener('click', () => {
-  if (dayIndex < days.length - 1) {
-    dayIndex += 1;
-    renderDay();
-  }
-});
-
-document.getElementById('prevRawBtn').addEventListener('click', () => {
-  if (rawIndex > 0) {
-    rawIndex -= 1;
-    renderRawDay();
-  }
-});
-
-document.getElementById('nextRawBtn').addEventListener('click', () => {
-  if (rawIndex < rawDays.length - 1) {
-    rawIndex += 1;
-    renderRawDay();
-  }
-});
-
 loadSummary();
-loadCarousel();
-loadRawDevicesCarousel();
 </script>
 </body>
 </html>
