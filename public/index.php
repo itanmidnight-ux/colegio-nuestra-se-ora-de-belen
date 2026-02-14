@@ -53,13 +53,17 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <header class="public-header" id="inicio">
     <div class="top-bar">Institución Educativa Nuestra Señora de Belén · Cúcuta</div>
     <div class="header-inner">
-      <a class="header-logos" href="index.php" aria-label="Ir al inicio">
-        <img src="escudo.jpeg" alt="Escudo Institucional">
-        <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
-      </a>
-      <div class="brand-text">
-        <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
-        <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
+      <div class="header-brand-row">
+        <a class="header-logo-badge" href="index.php" aria-label="Ir al inicio con ECO Belén">
+          <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
+        </a>
+        <div class="brand-text">
+          <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
+          <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
+        </div>
+        <a class="header-logo-badge" href="index.php" aria-label="Ir al inicio con el escudo institucional">
+          <img src="escudo.jpeg" alt="Escudo Institucional">
+        </a>
       </div>
       <nav class="main-nav">
         <a href="#inicio">Inicio</a>
@@ -112,67 +116,42 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       </div>
     </section>
 
-
-    <section class="about-project" aria-labelledby="about-project-title">
+    <section class="periodicos-section" id="periodicos" aria-labelledby="periodicos-title">
       <div class="section-header">
-        <h2 id="about-project-title">Proyecto periódico escolar ECO BELÉN</h2>
-        <p>Una plataforma pública para mostrar, publicar y preservar las ediciones del periódico escolar.</p>
+        <h2 id="periodicos-title">Último periódico publicado</h2>
+        <p>Acceso rápido a la edición más reciente de ECO BELÉN.</p>
       </div>
-      <div class="about-project-grid">
-        <article class="about-project-card anim-card" style="--delay: 0.05s">
-          <h3>Descripción del proyecto</h3>
-          <p>ECO BELÉN nace como un proyecto pedagógico y comunicativo de la Institución Educativa Nuestra Señora de Belén para fortalecer la lectura crítica, la escritura argumentativa y el liderazgo estudiantil. Este portal reúne artículos, crónicas, entrevistas, columnas de opinión, muestras artísticas y reportajes sobre ciencia, deporte, cultura y convivencia escolar, permitiendo que cada edición del periódico sea visible para estudiantes, familias, egresados y comunidad en general.</p>
-          <p>Además de publicar contenidos, la página funciona como archivo histórico del colegio: conserva las producciones editoriales por año, facilita la consulta de secciones temáticas y promueve una ciudadanía digital responsable al dar contexto, fuentes y lenguaje periodístico de calidad. Con esta iniciativa, el periódico deja de ser una publicación aislada para convertirse en un espacio vivo de participación, memoria y construcción colectiva.</p>
-        </article>
-        <article class="about-project-card about-project-highlights anim-card" style="--delay: 0.1s">
-          <h3>Enfoque editorial y comunitario</h3>
-          <ul class="info-list">
-            <li><strong>Formación:</strong> fortalece competencias comunicativas y pensamiento crítico.</li>
-            <li><strong>Participación:</strong> visibiliza la voz de estudiantes y docentes.</li>
-            <li><strong>Memoria:</strong> organiza y conserva periódicos escolares en línea.</li>
-            <li><strong>Proyección:</strong> conecta a la comunidad con procesos y logros institucionales.</li>
-          </ul>
-          <div class="panel-tags">
-            <span>Crónicas escolares</span>
-            <span>Investigación juvenil</span>
-            <span>Arte y cultura</span>
-            <span>Opinión estudiantil</span>
-          </div>
-        </article>
+
+      <div class="periodicos-ultima">
+        <?php
+        if (!empty($periodicos_array)) {
+            $ultimo = $periodicos_array[0];
+            echo "<article class='periodico-hero anim-card' style='--delay: 0.1s'>
+                    <div>
+                      <p class='periodico-kicker'>Última edición</p>
+                      <h3>{$ultimo['titulo']}</h3>
+                      <p>Fecha: {$ultimo['publicado_en']} · Dir: {$ultimo['director']}</p>
+                    </div>
+                    <div class='periodico-actions'>
+                      <a href='view.php?id={$ultimo['id']}' class='btn-primary'>Lectura en línea</a>
+                      <a href='periodicos.php' class='btn-outline'>Ver todos</a>
+                    </div>
+                  </article>";
+        } else {
+            echo "<p>No hay periódicos disponibles aún.</p>";
+        }
+        ?>
       </div>
     </section>
 
-    <section class="spotlight-section" id="institucion" aria-labelledby="institucion-title">
-      <div class="section-header">
-        <h2 id="institucion-title">Nuestra institución</h2>
-        <p>Inspirados en la identidad Colnubelen, fortalecemos la formación académica y humana con visión futurista.</p>
-      </div>
-      <div class="spotlight-grid">
-        <article class="spotlight-card anim-card" style="--delay: 0.05s">
-          <h3>Sede principal</h3>
-          <ul class="info-list">
-            <li><strong>Dirección:</strong> Calle 26 No. 27-60, Barrio Belén.</li>
-            <li><strong>Municipio:</strong> Cúcuta - Norte de Santander.</li>
-            <li><strong>Niveles:</strong> Primera infancia, básica primaria, secundaria, media académica y técnica.</li>
-            <li><strong>Rector:</strong> Carlos Luis Villamizar Ramírez.</li>
-          </ul>
-        </article>
-        <article class="spotlight-card anim-card" style="--delay: 0.1s">
-          <h3>Horizonte institucional</h3>
-          <div class="spotlight-highlight">
-            <p>Ser líderes en formación académica y técnica, con valores humanos sólidos y crecimiento cualitativo de la comunidad educativa.</p>
-          </div>
-          <div class="panel-tags">
-            <span>Calidad</span>
-            <span>Servicio</span>
-            <span>Identidad</span>
-          </div>
-        </article>
-        <article class="spotlight-card anim-card" style="--delay: 0.15s">
-          <h3>Símbolos institucionales</h3>
-          <p>Conoce los elementos que representan nuestra historia y visión institucional.</p>
-          <a class="btn-outline" href="https://www.colnubelen.edu.co/simbolos.php" target="_blank" rel="noreferrer">Ver símbolos</a>
-        </article>
+    <section class="honor-cta" aria-labelledby="honor-cta-title">
+      <div class="honor-cta-inner anim-card" style="--delay: 0.12s">
+        <div>
+          <p class="hero-kicker">Reconocimiento institucional</p>
+          <h2 id="honor-cta-title">¡Celebremos juntos el talento Belenista!</h2>
+          <p>Descubre a nuestros estudiantes destacados, sus logros académicos y el esfuerzo que inspira a toda la comunidad educativa. Ingresa ahora al Cuadro de Honor y conoce las historias que nos llenan de orgullo.</p>
+        </div>
+        <a class="btn-primary" href="https://www.webcolegios.com/cuadro_honor.php?cod_sede=02&idcolegio=8" target="_blank" rel="noreferrer noopener">Ver Cuadro de Honor</a>
       </div>
     </section>
 
@@ -237,45 +216,72 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       </div>
     </section>
 
-
-    <section class="honor-cta" aria-labelledby="honor-cta-title">
-      <div class="honor-cta-inner anim-card" style="--delay: 0.12s">
-        <div>
-          <p class="hero-kicker">Reconocimiento institucional</p>
-          <h2 id="honor-cta-title">¡Celebremos juntos el talento Belenista!</h2>
-          <p>Descubre a nuestros estudiantes destacados, sus logros académicos y el esfuerzo que inspira a toda la comunidad educativa. Ingresa ahora al Cuadro de Honor y conoce las historias que nos llenan de orgullo.</p>
-        </div>
-        <a class="btn-primary" href="https://www.webcolegios.com/cuadro_honor.php?cod_sede=02&idcolegio=8" target="_blank" rel="noreferrer noopener">Ver Cuadro de Honor</a>
-      </div>
-    </section>
-
-    <section class="periodicos-section" id="periodicos" aria-labelledby="periodicos-title">
+    <section class="about-project" aria-labelledby="about-project-title">
       <div class="section-header">
-        <h2 id="periodicos-title">Último periódico publicado</h2>
-        <p>Acceso rápido a la edición más reciente de ECO BELÉN.</p>
+        <h2 id="about-project-title">Proyecto periódico escolar ECO BELÉN</h2>
+        <p>Una plataforma pública para mostrar, publicar y preservar las ediciones del periódico escolar.</p>
       </div>
-
-      <div class="periodicos-ultima">
-        <?php
-        if (!empty($periodicos_array)) {
-            $ultimo = $periodicos_array[0];
-            echo "<article class='periodico-hero anim-card' style='--delay: 0.1s'>
-                    <div>
-                      <p class='periodico-kicker'>Última edición</p>
-                      <h3>{$ultimo['titulo']}</h3>
-                      <p>Fecha: {$ultimo['publicado_en']} · Dir: {$ultimo['director']}</p>
-                    </div>
-                    <div class='periodico-actions'>
-                      <a href='view.php?id={$ultimo['id']}' class='btn-primary'>Lectura en línea</a>
-                      <a href='periodicos.php' class='btn-outline'>Ver todos</a>
-                    </div>
-                  </article>";
-        } else {
-            echo "<p>No hay periódicos disponibles aún.</p>";
-        }
-        ?>
+      <div class="about-project-grid">
+        <article class="about-project-card anim-card" style="--delay: 0.05s">
+          <h3>Descripción del proyecto</h3>
+          <p>ECO BELÉN nace como un proyecto pedagógico y comunicativo de la Institución Educativa Nuestra Señora de Belén para fortalecer la lectura crítica, la escritura argumentativa y el liderazgo estudiantil. Este portal reúne artículos, crónicas, entrevistas, columnas de opinión, muestras artísticas y reportajes sobre ciencia, deporte, cultura y convivencia escolar, permitiendo que cada edición del periódico sea visible para estudiantes, familias, egresados y comunidad en general.</p>
+          <p>Además de publicar contenidos, la página funciona como archivo histórico del colegio: conserva las producciones editoriales por año, facilita la consulta de secciones temáticas y promueve una ciudadanía digital responsable al dar contexto, fuentes y lenguaje periodístico de calidad. Con esta iniciativa, el periódico deja de ser una publicación aislada para convertirse en un espacio vivo de participación, memoria y construcción colectiva.</p>
+        </article>
+        <article class="about-project-card about-project-highlights anim-card" style="--delay: 0.1s">
+          <h3>Enfoque editorial y comunitario</h3>
+          <ul class="info-list">
+            <li><strong>Formación:</strong> fortalece competencias comunicativas y pensamiento crítico.</li>
+            <li><strong>Participación:</strong> visibiliza la voz de estudiantes y docentes.</li>
+            <li><strong>Memoria:</strong> organiza y conserva periódicos escolares en línea.</li>
+            <li><strong>Proyección:</strong> conecta a la comunidad con procesos y logros institucionales.</li>
+          </ul>
+          <div class="panel-tags">
+            <span>Crónicas escolares</span>
+            <span>Investigación juvenil</span>
+            <span>Arte y cultura</span>
+            <span>Opinión estudiantil</span>
+          </div>
+        </article>
       </div>
     </section>
+
+    <section class="spotlight-section" id="institucion" aria-labelledby="institucion-title">
+      <div class="section-header">
+        <h2 id="institucion-title">Nuestra institución</h2>
+        <p>Inspirados en la identidad Colnubelen, fortalecemos la formación académica y humana con visión futurista.</p>
+      </div>
+      <div class="spotlight-grid">
+        <article class="spotlight-card anim-card" style="--delay: 0.05s">
+          <h3>Sede principal</h3>
+          <ul class="info-list">
+            <li><strong>Dirección:</strong> Calle 26 No. 27-60, Barrio Belén.</li>
+            <li><strong>Municipio:</strong> Cúcuta - Norte de Santander.</li>
+            <li><strong>Niveles:</strong> Primera infancia, básica primaria, secundaria, media académica y técnica.</li>
+            <li><strong>Rector:</strong> Carlos Luis Villamizar Ramírez.</li>
+          </ul>
+        </article>
+        <article class="spotlight-card anim-card" style="--delay: 0.1s">
+          <h3>Horizonte institucional</h3>
+          <div class="spotlight-highlight">
+            <p>Ser líderes en formación académica y técnica, con valores humanos sólidos y crecimiento cualitativo de la comunidad educativa.</p>
+          </div>
+          <div class="panel-tags">
+            <span>Calidad</span>
+            <span>Servicio</span>
+            <span>Identidad</span>
+          </div>
+        </article>
+        <article class="spotlight-card anim-card" style="--delay: 0.15s">
+          <h3>Símbolos institucionales</h3>
+          <p>Conoce los elementos que representan nuestra historia y visión institucional.</p>
+          <a class="btn-outline" href="https://www.colnubelen.edu.co/simbolos.php" target="_blank" rel="noreferrer">Ver símbolos</a>
+        </article>
+      </div>
+    </section>
+
+
+
+
   </main>
 
   <footer class="footer" id="contacto">
