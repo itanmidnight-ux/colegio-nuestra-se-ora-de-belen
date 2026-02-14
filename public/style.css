@@ -793,6 +793,46 @@ img {
     box-shadow: var(--shadow-strong);
 }
 
+
+.contact-hero .hero-text h1,
+.contact-hero .hero-kicker,
+.contact-hero .hero-lead,
+.contact-hero .hero-card,
+.contact-hero .hero-card h2,
+.contact-hero .hero-card p {
+    color: #ffffff;
+}
+
+.contact-hero .hero-card {
+    background: rgba(13, 41, 96, 0.45);
+}
+
+.honor-cta {
+    padding: 20px;
+}
+
+.honor-cta-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: linear-gradient(120deg, #003868, #1168c4);
+    color: #ffffff;
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-strong);
+}
+
+.honor-cta-inner h2,
+.honor-cta-inner p,
+.honor-cta-inner .hero-kicker {
+    color: #ffffff;
+    margin-top: 0;
+}
+
 .contact-grid {
     max-width: 1200px;
     margin: 0 auto 40px;

@@ -21,6 +21,15 @@ function ensureVisitsTables(mysqli $conn): void
         UNIQUE KEY uq_fecha_total (fecha),
         INDEX idx_totales_fecha (fecha)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $conn->query("CREATE TABLE IF NOT EXISTS visitas_dispositivos_diarias (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        fecha DATE NOT NULL,
+        identificador_dispositivo CHAR(64) NOT NULL,
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uq_dispositivo_fecha (fecha, identificador_dispositivo),
+        INDEX idx_dispositivo_fecha (fecha)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 }
 
 function registerSectionVisit(mysqli $conn, string $section): void
@@ -49,5 +58,17 @@ function registerSectionVisit(mysqli $conn, string $section): void
         $stmtTotal->bind_param('s', $today);
         $stmtTotal->execute();
         $stmtTotal->close();
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown-agent';
+    $deviceId = hash('sha256', $ip . '|' . $userAgent);
+
+    $stmtDevice = $conn->prepare("INSERT IGNORE INTO visitas_dispositivos_diarias (fecha, identificador_dispositivo)
+        VALUES (?, ?)");
+    if ($stmtDevice) {
+        $stmtDevice->bind_param('ss', $today, $deviceId);
+        $stmtDevice->execute();
+        $stmtDevice->close();
     }
 }

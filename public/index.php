@@ -237,6 +237,18 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       </div>
     </section>
 
+
+    <section class="honor-cta" aria-labelledby="honor-cta-title">
+      <div class="honor-cta-inner anim-card" style="--delay: 0.12s">
+        <div>
+          <p class="hero-kicker">Reconocimiento institucional</p>
+          <h2 id="honor-cta-title">¡Celebremos juntos el talento Belenista!</h2>
+          <p>Descubre a nuestros estudiantes destacados, sus logros académicos y el esfuerzo que inspira a toda la comunidad educativa. Ingresa ahora al Cuadro de Honor y conoce las historias que nos llenan de orgullo.</p>
+        </div>
+        <a class="btn-primary" href="https://www.webcolegios.com/cuadro_honor.php?cod_sede=02&idcolegio=8" target="_blank" rel="noreferrer noopener">Ver Cuadro de Honor</a>
+      </div>
+    </section>
+
     <section class="periodicos-section" id="periodicos" aria-labelledby="periodicos-title">
       <div class="section-header">
         <h2 id="periodicos-title">Último periódico publicado</h2>
