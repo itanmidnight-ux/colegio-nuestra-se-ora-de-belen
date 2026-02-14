@@ -1,5 +1,7 @@
 <?php
 require_once "../config.php";
+require_once "visit_tracker.php";
+registerSectionVisit($conn, 'contacto');
 
 function ensureContactosColumns(mysqli $conn, array $columns): void
 {

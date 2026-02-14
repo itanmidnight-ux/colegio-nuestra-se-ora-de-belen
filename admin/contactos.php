@@ -144,6 +144,7 @@ if ($stmt) {
         <a href="dashboard.php" class="btn-view">Panel</a>
         <a href="secciones.php" class="btn-view">Secciones</a>
         <a href="encuestas.php" class="btn-view">Encuestas</a>
+        <a href="visitas.php" class="btn-view">Visitas</a>
         <a href="logout.php" class="btn-view">Cerrar sesión</a>
     </nav>
 </header>

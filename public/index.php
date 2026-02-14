@@ -1,5 +1,7 @@
 <?php
 require_once "../config.php";
+require_once "visit_tracker.php";
+registerSectionVisit($conn, 'inicio');
 
 $sql = "SELECT id, titulo, director, publicado_en, archivo_pdf FROM periodicos ORDER BY publicado_en DESC";
 $result = $conn->query($sql);

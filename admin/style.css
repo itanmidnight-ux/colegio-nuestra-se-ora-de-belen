@@ -668,6 +668,36 @@ select:focus-visible {
   gap: 16px;
 }
 
+
+.survey-charts-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.survey-chart-card {
+  background: #f8fbff;
+  border: 1px solid var(--admin-border);
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 250px;
+  height: 250px;
+}
+
+.survey-chart-card-pie {
+  max-width: 300px;
+}
+
+.survey-chart-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.survey-stats-card {
+  margin-top: 16px;
+}
+
 .survey-actions-panel {
   position: static;
   top: auto;
@@ -770,8 +800,36 @@ select:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .survey-charts-row {
+    grid-template-columns: 1fr;
+  }
+
+  .survey-chart-card,
+  .survey-chart-card-pie {
+    max-width: 100%;
+    height: 230px;
+  }
+
   .survey-side-head {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+.visit-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.visit-day-label {
+  font-weight: 700;
+  color: var(--admin-primary);
+  background: #f7faff;
+  border: 1px solid var(--admin-border);
+  padding: 10px 14px;
+  border-radius: 10px;
 }

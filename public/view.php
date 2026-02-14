@@ -1,5 +1,7 @@
 <?php
 require_once "../config.php";
+require_once "visit_tracker.php";
+registerSectionVisit($conn, 'lectura_periodico');
 
 if (!isset($_GET['id'])) {
     header("Location: index.php");
