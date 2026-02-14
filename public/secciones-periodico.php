@@ -1,5 +1,7 @@
 <?php
 require_once "../config.php";
+require_once "visit_tracker.php";
+registerSectionVisit($conn, 'secciones');
 
 function ensureColumnExists(mysqli $conn, string $table, string $column, string $definition): void
 {
@@ -165,8 +167,9 @@ function obtener_url_embed_video($url)
                 <img src="<?= htmlspecialchars(resolver_imagen_seccion($sec['imagen'])) ?>" alt="Imagen sección <?= htmlspecialchars($sec['titulo']) ?>" class="section-image-main">
               </div>
             <?php endif; ?>
-            <p class="section-description"><?= htmlspecialchars($sec['descripcion']) ?></p>
-            <p><?= nl2br(htmlspecialchars($sec['contenido'])) ?></p>
+            <div class="section-content">
+              <p class="section-description"><?= htmlspecialchars($sec['descripcion']) ?></p>
+              <p><?= nl2br(htmlspecialchars($sec['contenido'])) ?></p>
 
             <?php if (count($bloques) > 0): ?>
               <div class="section-extra-content">
@@ -196,6 +199,7 @@ function obtener_url_embed_video($url)
                 <?php endforeach; ?>
               </div>
             <?php endif; ?>
+            </div>
           </article>
         <?php endforeach; ?>
       <?php else: ?>

@@ -1014,20 +1014,23 @@ img {
 }
 
 .footer-links {
-    display: flex;
+    display: grid;
     gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 6px;
+    margin-top: 8px;
 }
 
 .footer-links a {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
-    padding: 6px 10px;
-    border-radius: 999px;
+    padding: 10px 12px;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
 }
 
 .footer-links a:hover {
@@ -1418,8 +1421,7 @@ img {
 
     .hero-actions,
     .periodico-actions,
-    .periodico-actions-inline,
-    .footer-links {
+    .periodico-actions-inline {
         flex-direction: column;
         align-items: flex-start;
     }
@@ -1451,42 +1453,71 @@ img {
 
 .sections-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
-    max-width: 1000px;
+    gap: 30px;
+    max-width: 1080px;
+    margin: 0 auto;
 }
 
 .section-card {
-    padding: 24px;
+    padding: clamp(20px, 3vw, 34px);
     border: 1px solid rgba(0, 72, 132, 0.12);
     border-radius: 18px;
-    background: #ffffff;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     box-shadow: var(--shadow-light);
 }
 
 .section-thumb {
-    height: clamp(240px, 45vw, 520px);
-    margin-bottom: 16px;
+    width: min(320px, 100%);
+    height: clamp(180px, 24vw, 240px);
+    margin: 0 20px 10px 0;
+    float: left;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 72, 132, 0.14);
+    background: #f2f5fb;
 }
 
 .section-image-main,
 .section-extra-media img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     background: #f2f5fb;
 }
 
 .section-title {
-    font-size: clamp(2rem, 4.2vw, 3rem);
-    line-height: 1.1;
-    margin: 6px 0 10px;
+    font-family: 'Merriweather', serif;
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    line-height: 1.2;
+    margin: 2px 0 10px;
     color: var(--primary-color);
-    letter-spacing: 0.2px;
+    letter-spacing: 0.15px;
 }
 
 .section-description {
-    font-weight: 600;
+    font-weight: 700;
     color: var(--secondary-color);
+    margin-bottom: 14px;
+}
+
+.section-content {
+    column-count: 2;
+    column-gap: 30px;
+    text-align: justify;
+    color: #243446;
+}
+
+.section-content p,
+.section-content .section-extra-text,
+.section-content .section-extra-media,
+.section-content .section-video-wrap {
+    break-inside: avoid;
+}
+
+.section-content::after {
+    content: "";
+    display: block;
+    clear: both;
 }
 
 .section-extra-content {
@@ -1507,13 +1538,14 @@ img {
     border-radius: 14px;
     overflow: hidden;
     border: 1px solid rgba(0, 72, 132, 0.14);
-    min-height: 220px;
+    min-height: 180px;
+    max-width: 420px;
     background: #f4f7fc;
 }
 
 .section-video-wrap {
     position: relative;
-    width: 100%;
+    width: min(420px, 100%);
     aspect-ratio: 16 / 9;
     border-radius: 14px;
     overflow: hidden;
@@ -1527,53 +1559,17 @@ img {
     border: 0;
 }
 
-.pdf-container iframe {
-    min-height: 82vh;
-}
+@media (max-width: 900px) {
+    .section-content {
+        column-count: 1;
+    }
 
-.pdf-container {
-    min-height: 82vh;
-}
-
-.contact-preferences {
-    border: 1px solid rgba(0, 72, 132, 0.18);
-    border-radius: 14px;
-    padding: 14px;
-    background: #f7faff;
-}
-
-.contact-preferences legend {
-    color: var(--primary-color);
-    font-weight: 700;
-    padding: 0 6px;
-}
-
-.inline-check {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 8px 0;
-    font-weight: 600;
-}
-
-.contact-extra-fields {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed rgba(0, 72, 132, 0.2);
-}
-
-.reader-end-wrap {
-    margin-top: 14px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.pdf-container iframe {
-    min-height: clamp(480px, 85vh, 1100px);
-}
-
-.pdf-container {
-    min-height: clamp(480px, 85vh, 1100px);
+    .section-thumb {
+        float: none;
+        margin: 0 0 16px;
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 .survey-modal {

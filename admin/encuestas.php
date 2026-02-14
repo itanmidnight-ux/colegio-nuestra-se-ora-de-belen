@@ -22,6 +22,7 @@ if (!isset($_SESSION['user_id'])) {
     <a href="dashboard.php" class="btn-view">Periódicos</a>
     <a href="secciones.php" class="btn-view">Secciones</a>
     <a href="contactos.php" class="btn-view">Mensajes</a>
+    <a href="visitas.php" class="btn-view">Visitas</a>
     <a href="logout.php" class="btn-view">Cerrar sesión</a>
   </nav>
 </header>
@@ -40,9 +41,15 @@ if (!isset($_SESSION['user_id'])) {
     <h2 id="panelTitle">Selecciona una encuesta</h2>
     <div class="survey-dashboard-grid">
       <div>
-        <canvas id="pieChart" height="180"></canvas>
-        <canvas id="barChart" height="140" style="margin-top:16px"></canvas>
-        <div id="statsTable" class="card" style="margin-top:16px"></div>
+        <div class="survey-charts-row">
+          <div class="survey-chart-card survey-chart-card-pie">
+            <canvas id="pieChart"></canvas>
+          </div>
+          <div class="survey-chart-card">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+        <div id="statsTable" class="card survey-stats-card"></div>
       </div>
       <div class="side-panel survey-actions-panel">
         <h4>Acciones</h4>
@@ -166,12 +173,13 @@ async function loadDetail(id){
   barChart?.destroy();
   pieChart = new Chart(document.getElementById('pieChart'), {
     type:'pie',
-    data:{labels, datasets:[{data:values, backgroundColor:['#3366cc','#dc3912','#ff9900','#109618','#990099','#0099c6']}]} 
+    data:{labels, datasets:[{data:values, backgroundColor:['#3366cc','#dc3912','#ff9900','#109618','#990099','#0099c6']}]} ,
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}}
   });
   barChart = new Chart(document.getElementById('barChart'), {
     type:'bar',
-    data:{labels, datasets:[{label:'Respuestas', data:values, backgroundColor:'#3366cc'}]},
-    options:{plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{precision:0}}}}
+    data:{labels, datasets:[{label:'Respuestas', data:values, backgroundColor:'#3366cc', borderRadius:8}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{precision:0}}}}
   });
 
   const total = values.reduce((a,b)=>a+b,0);

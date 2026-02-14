@@ -56,6 +56,7 @@ if ($res) {
     <a href="dashboard.php" class="btn-view">Periódicos</a>
     <a href="contactos.php" class="btn-view">Mensajes</a>
     <a href="encuestas.php" class="btn-view">Encuestas</a>
+        <a href="visitas.php" class="btn-view">Visitas</a>
     <a href="logout.php" class="btn-view">Cerrar sesión</a>
   </nav>
 </header>

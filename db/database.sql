@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS encuesta_opciones;
 DROP TABLE IF EXISTS encuestas;
 DROP TABLE IF EXISTS periodicos;
 DROP TABLE IF EXISTS secciones_periodico;
+DROP TABLE IF EXISTS visitas_totales_diarias;
+DROP TABLE IF EXISTS visitas_secciones_diarias;
 DROP TABLE IF EXISTS contactos;
 DROP TABLE IF EXISTS users;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -51,6 +53,27 @@ CREATE TABLE IF NOT EXISTS secciones_periodico (
     actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_seccion_orden (orden_visual),
     INDEX idx_seccion_titulo (titulo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE IF NOT EXISTS visitas_secciones_diarias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    seccion VARCHAR(120) NOT NULL,
+    fecha DATE NOT NULL,
+    visitas INT NOT NULL DEFAULT 0,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_seccion_fecha (seccion, fecha),
+    INDEX idx_visitas_fecha (fecha),
+    INDEX idx_visitas_seccion (seccion)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS visitas_totales_diarias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    total_visitas INT NOT NULL DEFAULT 0,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_fecha_total (fecha),
+    INDEX idx_totales_fecha (fecha)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS contactos (

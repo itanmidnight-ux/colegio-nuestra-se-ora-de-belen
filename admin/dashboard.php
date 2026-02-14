@@ -40,6 +40,7 @@ if ($result && $result->num_rows > 0) {
         <a href="contactos.php" class="btn-view">Mensajes</a>
         <a href="secciones.php" class="btn-view">Secciones</a>
         <a href="encuestas.php" class="btn-view">Encuestas</a>
+        <a href="visitas.php" class="btn-view">Visitas</a>
         <a href="logout.php" class="btn-view">Cerrar sesión</a>
     </nav>
 </header>
