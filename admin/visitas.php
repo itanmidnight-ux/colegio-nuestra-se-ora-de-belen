@@ -44,6 +44,19 @@ if (!isset($_SESSION['user_id'])) {
       <canvas id="dailyVisitsChart"></canvas>
     </div>
     <div id="dayDetail" class="card survey-stats-card"></div>
+
+    <div class="visit-carousel">
+      <h2>Carrusel de visitas brutas por dispositivo</h2>
+      <div class="visit-carousel-controls">
+        <button type="button" class="btn-view" id="prevRawBtn">← Día anterior</button>
+        <div id="currentRawLabel" class="visit-day-label">Sin datos</div>
+        <button type="button" class="btn-view" id="nextRawBtn">Día siguiente →</button>
+      </div>
+      <div class="survey-chart-card" style="height:320px; max-width:none;">
+        <canvas id="rawVisitsChart"></canvas>
+      </div>
+      <div id="rawDetail" class="card survey-stats-card"></div>
+    </div>
   </section>
 </main>
 
@@ -51,6 +64,10 @@ if (!isset($_SESSION['user_id'])) {
 let days = [];
 let dayIndex = 0;
 let visitsChart;
+
+let rawDays = [];
+let rawIndex = 0;
+let rawChart;
 
 async function loadSummary() {
   const res = await fetch('visitas_api.php?action=summary');
@@ -62,6 +79,7 @@ async function loadSummary() {
   document.getElementById('visitSummary').innerHTML = `
     <p><strong>Total de visitas:</strong> ${s.total_visitas}</p>
     <p><strong>Días con registro:</strong> ${s.total_dias}</p>
+    <p><strong>Dispositivos registrados:</strong> ${s.total_dispositivos_registrados || 0}</p>
     <p><strong>Último día registrado:</strong> ${s.ultima_fecha || '—'}</p>
     <h4>Top de secciones</h4>
     <ul>${sectionsHtml || '<li>No hay datos todavía.</li>'}</ul>
@@ -121,6 +139,51 @@ function renderDay() {
   document.getElementById('nextDayBtn').disabled = dayIndex === days.length - 1;
 }
 
+async function loadRawDevicesCarousel() {
+  const res = await fetch('visitas_api.php?action=raw_devices_carousel');
+  const json = await res.json();
+  if (json.status !== 'ok') return;
+  rawDays = json.items || [];
+
+  if (!rawDays.length) {
+    document.getElementById('currentRawLabel').textContent = 'Sin datos aún';
+    document.getElementById('rawDetail').innerHTML = '<p>Aún no hay visitas brutas por dispositivos para mostrar.</p>';
+    return;
+  }
+
+  rawIndex = rawDays.length - 1;
+  renderRawDay();
+}
+
+function renderRawDay() {
+  const day = rawDays[rawIndex];
+  document.getElementById('currentRawLabel').textContent = `${day.fecha} · Dispositivos: ${day.dispositivos_brutos}`;
+
+  rawChart?.destroy();
+  rawChart = new Chart(document.getElementById('rawVisitsChart'), {
+    type: 'bar',
+    data: {
+      labels: [day.fecha],
+      datasets: [{
+        label: 'Visitas brutas (dispositivos)',
+        data: [Number(day.dispositivos_brutos)],
+        backgroundColor: '#f2c600',
+        borderRadius: 10,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+
+  document.getElementById('rawDetail').innerHTML = `<h3>Detalle de visitas brutas</h3><p><strong>${day.fecha}</strong>: ${day.dispositivos_brutos} dispositivo(s) únicos detectados.</p>`;
+  document.getElementById('prevRawBtn').disabled = rawIndex === 0;
+  document.getElementById('nextRawBtn').disabled = rawIndex === rawDays.length - 1;
+}
+
 document.getElementById('prevDayBtn').addEventListener('click', () => {
   if (dayIndex > 0) {
     dayIndex -= 1;
@@ -135,8 +198,23 @@ document.getElementById('nextDayBtn').addEventListener('click', () => {
   }
 });
 
+document.getElementById('prevRawBtn').addEventListener('click', () => {
+  if (rawIndex > 0) {
+    rawIndex -= 1;
+    renderRawDay();
+  }
+});
+
+document.getElementById('nextRawBtn').addEventListener('click', () => {
+  if (rawIndex < rawDays.length - 1) {
+    rawIndex += 1;
+    renderRawDay();
+  }
+});
+
 loadSummary();
 loadCarousel();
+loadRawDevicesCarousel();
 </script>
 </body>
 </html>

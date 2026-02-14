@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 require_once "../config.php";
 
 // Obtener periódicos para listar
-$sql = "SELECT id, titulo, director, publicado_en, archivo_pdf, descripcion 
+$sql = "SELECT id, titulo, director, participantes, publicado_en, archivo_pdf, descripcion 
         FROM periodicos ORDER BY publicado_en DESC";
 $result = $conn->query($sql);
 $periodicos_array = [];
@@ -15,6 +15,11 @@ if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $periodicos_array[] = $row;
     }
+}
+
+function e(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 ?>
 <!DOCTYPE html>
@@ -56,21 +61,35 @@ if ($result && $result->num_rows > 0) {
             if (count($periodicos_array) > 0) {
                 $i = 1;
                 foreach ($periodicos_array as $row) {
-                    echo "<div class='list-item'>
+                    $titulo = e((string) $row['titulo']);
+                    $director = e((string) $row['director']);
+                    $participantes = e((string) ($row['participantes'] ?? ''));
+                    $fecha = e((string) $row['publicado_en']);
+                    $descripcion = e((string) ($row['descripcion'] ?? ''));
+                    $pdfUrl = e("../uploads/" . $row['archivo_pdf']);
+
+                    echo "<div class='list-item periodico-item'
+                            data-id='{$row['id']}'
+                            data-titulo='{$titulo}'
+                            data-director='{$director}'
+                            data-participantes='{$participantes}'
+                            data-fecha='{$fecha}'
+                            data-descripcion='{$descripcion}'
+                            data-pdf='{$pdfUrl}'>
                             <div>
-                                <strong>{$i}. {$row['titulo']}</strong><br>
-                                <span>📅 {$row['publicado_en']} | Dir: {$row['director']}</span>
+                                <strong>{$i}. {$titulo}</strong><br>
+                                <span>📅 {$fecha} | Dir: {$director}</span>
                             </div>
                             <div class='action-buttons'>
                                 <button class='btn-view ver-btn' 
-                                    data-pdf='../uploads/{$row['archivo_pdf']}' 
-                                    data-titulo='{$row['titulo']}'>👁 Ver</button>
+                                    data-pdf='{$pdfUrl}' 
+                                    data-titulo='{$titulo}'>👁 Ver</button>
                                 <button class='btn-edit' 
                                     data-id='{$row['id']}' 
-                                    data-titulo='{$row['titulo']}' 
-                                    data-director='{$row['director']}'
-                                    data-fecha='{$row['publicado_en']}'
-                                    data-descripcion='{$row['descripcion']}'>✏️ Editar</button>
+                                    data-titulo='{$titulo}' 
+                                    data-director='{$director}'
+                                    data-fecha='{$fecha}'
+                                    data-descripcion='{$descripcion}'>✏️ Editar</button>
                                 <button class='btn-delete' data-id='{$row['id']}'>🗑️ Eliminar</button>
                             </div>
                           </div>";
@@ -87,7 +106,7 @@ if ($result && $result->num_rows > 0) {
     <section class="main-periodico-display">
         <h2>📌 Última acción</h2>
         <div id="mainCard" class="card" style="text-align:center;">
-            <p>Seleccione un periódico para verlo o agregue uno nuevo.</p>
+            <p>Seleccione un periódico para ver su vista previa o agregue uno nuevo.</p>
         </div>
     </section>
 

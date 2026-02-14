@@ -18,6 +18,7 @@ if ($action === 'summary') {
     $totalVisitas = 0;
     $totalDias = 0;
     $ultimaFecha = null;
+    $totalDispositivos = 0;
 
     $resTotal = $conn->query("SELECT COALESCE(SUM(total_visitas),0) total, COUNT(*) dias, MAX(fecha) ultima FROM visitas_totales_diarias");
     if ($resTotal) {
@@ -28,6 +29,12 @@ if ($action === 'summary') {
     }
 
     $secciones = [];
+    $resDispositivos = $conn->query("SELECT COUNT(*) total FROM visitas_dispositivos_diarias");
+    if ($resDispositivos) {
+        $rowDispositivos = $resDispositivos->fetch_assoc();
+        $totalDispositivos = (int)($rowDispositivos['total'] ?? 0);
+    }
+
     $resSecciones = $conn->query("SELECT seccion, COALESCE(SUM(visitas),0) total FROM visitas_secciones_diarias GROUP BY seccion ORDER BY total DESC");
     if ($resSecciones) {
         while ($r = $resSecciones->fetch_assoc()) {
@@ -41,6 +48,7 @@ if ($action === 'summary') {
             'total_visitas' => $totalVisitas,
             'total_dias' => $totalDias,
             'ultima_fecha' => $ultimaFecha,
+            'total_dispositivos_registrados' => $totalDispositivos,
             'secciones' => $secciones,
         ]
     ]);
@@ -71,6 +79,23 @@ if ($action === 'daily_carousel') {
                 'fecha' => $fecha,
                 'total_visitas' => (int)$dia['total_visitas'],
                 'secciones' => $secciones,
+            ];
+        }
+    }
+
+    echo json_encode(['status' => 'ok', 'items' => $items]);
+    exit;
+}
+
+
+if ($action === 'raw_devices_carousel') {
+    $items = [];
+    $resDias = $conn->query("SELECT fecha, COUNT(*) AS dispositivos_brutos FROM visitas_dispositivos_diarias GROUP BY fecha ORDER BY fecha ASC");
+    if ($resDias) {
+        while ($dia = $resDias->fetch_assoc()) {
+            $items[] = [
+                'fecha' => $dia['fecha'],
+                'dispositivos_brutos' => (int)$dia['dispositivos_brutos'],
             ];
         }
     }

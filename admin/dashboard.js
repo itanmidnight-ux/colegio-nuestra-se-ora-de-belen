@@ -7,9 +7,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const deleteForm = document.getElementById("deleteForm");
     const pdfModal = document.getElementById("pdfModal");
+    const mainCard = document.getElementById("mainCard");
 
     const closeModal = (modal) => {
         if (modal) modal.style.display = "none";
+    };
+
+    const renderMainPreview = ({ titulo, director, participantes, fecha, descripcion, pdf }) => {
+        if (!mainCard) return;
+
+        const participantesTexto = (participantes || "").trim() || "No registrados";
+        const descripcionTexto = (descripcion || "").trim() || "Sin descripción disponible.";
+
+        mainCard.classList.add("preview-card");
+        mainCard.innerHTML = `
+            <div class="preview-head">
+                <p class="preview-kicker">Vista previa de edición</p>
+                <h3>${titulo}</h3>
+                <p><strong>Director:</strong> ${director}</p>
+                <p><strong>Fecha:</strong> ${fecha}</p>
+                <p><strong>Participantes:</strong> ${participantesTexto}</p>
+                <p><strong>Descripción:</strong> ${descripcionTexto}</p>
+            </div>
+            <div class="preview-body">
+                <embed src="${pdf}" type="application/pdf" width="100%" height="100%" />
+                <div class="preview-actions">
+                    <a href="${pdf}" target="_blank" rel="noopener" class="btn-view">🔎 Abrir en pestaña nueva</a>
+                    <a href="${pdf}" download class="btn-view">⬇ Descargar PDF</a>
+                </div>
+            </div>
+        `;
     };
 
     document.getElementById("closeModalAdd")?.addEventListener("click", () => closeModal(fileDataModal));
@@ -131,22 +158,31 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    document.querySelectorAll(".periodico-item").forEach((item) => {
+        item.addEventListener("click", (event) => {
+            if (event.target.closest("button")) return;
+            renderMainPreview({
+                titulo: item.dataset.titulo,
+                director: item.dataset.director,
+                participantes: item.dataset.participantes,
+                fecha: item.dataset.fecha,
+                descripcion: item.dataset.descripcion,
+                pdf: item.dataset.pdf,
+            });
+        });
+    });
+
     document.querySelectorAll(".ver-btn").forEach((btn) => {
         btn.addEventListener("click", function () {
-            const pdfUrl = this.dataset.pdf;
-            const titulo = this.dataset.titulo;
-
-            document.getElementById("pdfTitle").innerText = "📖 " + titulo;
-            document.getElementById("downloadPdf").href = pdfUrl;
-            document.getElementById("openPdfNewTab").href = pdfUrl;
-            document.getElementById("pdfFallback").style.display = "none";
-            const embed = document.getElementById("pdfEmbed");
-            embed.src = pdfUrl;
-            pdfModal.style.display = "flex";
-
-            setTimeout(() => {
-                document.getElementById("pdfFallback").style.display = "block";
-            }, 1200);
+            const parent = this.closest(".periodico-item");
+            renderMainPreview({
+                titulo: parent?.dataset.titulo || this.dataset.titulo,
+                director: parent?.dataset.director || "",
+                participantes: parent?.dataset.participantes || "",
+                fecha: parent?.dataset.fecha || "",
+                descripcion: parent?.dataset.descripcion || "",
+                pdf: this.dataset.pdf,
+            });
         });
     });
 });
