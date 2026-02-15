@@ -93,22 +93,21 @@ img {
     max-width: 1200px;
     margin: 0 auto;
     padding: 14px 20px 18px;
-    display: grid;
-    gap: 16px;
-}
-
-.header-brand-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
 }
 
-.header-logo-badge {
+.header-logos {
+    display: flex;
+    gap: 10px;
+    align-items: center;
     text-decoration: none;
 }
 
-.header-logo-badge img {
+.header-logos img {
     width: clamp(44px, 5vw, 62px);
     height: clamp(44px, 5vw, 62px);
     background: #ffffff;
@@ -122,7 +121,6 @@ img {
 .brand-text {
     display: grid;
     gap: 4px;
-    text-align: center;
 }
 
 .brand-name {
@@ -141,7 +139,6 @@ img {
     gap: 20px;
     flex-wrap: wrap;
     font-weight: 600;
-    justify-content: center;
 }
 
 .main-nav a {
@@ -1377,15 +1374,11 @@ img {
     .header-inner {
         padding: 10px 12px;
         gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .header-brand-row {
-        width: 100%;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .header-logo-badge img {
+    .header-logos img {
         width: 40px;
         height: 40px;
         padding: 4px;
@@ -1404,7 +1397,6 @@ img {
         width: 100%;
         gap: 10px;
         font-size: 0.86rem;
-        justify-content: center;
     }
 
     .main-nav a {

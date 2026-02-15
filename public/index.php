@@ -53,17 +53,13 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <header class="public-header" id="inicio">
     <div class="top-bar">Institución Educativa Nuestra Señora de Belén · Cúcuta</div>
     <div class="header-inner">
-      <div class="header-brand-row">
-        <a class="header-logo-badge" href="index.php" aria-label="Ir al inicio con ECO Belén">
-          <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
-        </a>
-        <div class="brand-text">
-          <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
-          <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
-        </div>
-        <a class="header-logo-badge" href="index.php" aria-label="Ir al inicio con el escudo institucional">
-          <img src="escudo.jpeg" alt="Escudo Institucional">
-        </a>
+      <a class="header-logos" href="index.php" aria-label="Ir al inicio">
+        <img src="escudo.jpeg" alt="Escudo Institucional">
+        <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
+      </a>
+      <div class="brand-text">
+        <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
+        <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
       </div>
       <nav class="main-nav">
         <a href="#inicio">Inicio</a>
@@ -116,105 +112,6 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       </div>
     </section>
 
-    <section class="periodicos-section" id="periodicos" aria-labelledby="periodicos-title">
-      <div class="section-header">
-        <h2 id="periodicos-title">Último periódico publicado</h2>
-        <p>Acceso rápido a la edición más reciente de ECO BELÉN.</p>
-      </div>
-
-      <div class="periodicos-ultima">
-        <?php
-        if (!empty($periodicos_array)) {
-            $ultimo = $periodicos_array[0];
-            echo "<article class='periodico-hero anim-card' style='--delay: 0.1s'>
-                    <div>
-                      <p class='periodico-kicker'>Última edición</p>
-                      <h3>{$ultimo['titulo']}</h3>
-                      <p>Fecha: {$ultimo['publicado_en']} · Dir: {$ultimo['director']}</p>
-                    </div>
-                    <div class='periodico-actions'>
-                      <a href='view.php?id={$ultimo['id']}' class='btn-primary'>Lectura en línea</a>
-                      <a href='periodicos.php' class='btn-outline'>Ver todos</a>
-                    </div>
-                  </article>";
-        } else {
-            echo "<p>No hay periódicos disponibles aún.</p>";
-        }
-        ?>
-      </div>
-    </section>
-
-    <section class="honor-cta" aria-labelledby="honor-cta-title">
-      <div class="honor-cta-inner anim-card" style="--delay: 0.12s">
-        <div>
-          <p class="hero-kicker">Reconocimiento institucional</p>
-          <h2 id="honor-cta-title">¡Celebremos juntos el talento Belenista!</h2>
-          <p>Descubre a nuestros estudiantes destacados, sus logros académicos y el esfuerzo que inspira a toda la comunidad educativa. Ingresa ahora al Cuadro de Honor y conoce las historias que nos llenan de orgullo.</p>
-        </div>
-        <a class="btn-primary" href="https://www.webcolegios.com/cuadro_honor.php?cod_sede=02&idcolegio=8" target="_blank" rel="noreferrer noopener">Ver Cuadro de Honor</a>
-      </div>
-    </section>
-
-    <section class="news-layout-section" id="secciones" aria-labelledby="secciones-title">
-      <div class="section-header">
-        <h2 id="secciones-title">Secciones destacadas del periódico</h2>
-        <p>Portada editorial en formato de bloques para una lectura rápida y visual.</p>
-      </div>
-      <div class="news-layout">
-        <div class="news-main">
-          <?php if (!empty($secciones_array)): ?>
-            <?php $principal = $secciones_array[0]; ?>
-            <article class="news-feature anim-card" style="--delay: 0.05s">
-              <?php if (portada_src($principal['imagen'])): ?>
-                <div class="news-media">
-                  <img src="<?= htmlspecialchars(portada_src($principal['imagen'])) ?>" alt="Sección <?= htmlspecialchars($principal['titulo']) ?>">
-                </div>
-              <?php endif; ?>
-              <div class="news-copy">
-                <p class="periodico-kicker">Sección principal</p>
-                <h3><?= htmlspecialchars($principal['titulo']) ?></h3>
-                <p><?= htmlspecialchars($principal['descripcion'] ?: mb_substr(strip_tags($principal['contenido']), 0, 180) . '...') ?></p>
-                <a class="btn-primary" href="secciones-periodico.php">Leer sección</a>
-              </div>
-            </article>
-          <?php else: ?>
-            <article class="news-feature anim-card"><p>No hay secciones creadas aún.</p></article>
-          <?php endif; ?>
-
-          <div class="news-subgrid">
-            <?php foreach (array_slice($secciones_array, 1, 3) as $i => $sec): ?>
-              <article class="news-tile anim-card" style="--delay: <?= number_format(0.1 + ($i * 0.05), 2) ?>s">
-                <?php if (portada_src($sec['imagen'])): ?>
-                  <img src="<?= htmlspecialchars(portada_src($sec['imagen'])) ?>" alt="<?= htmlspecialchars($sec['titulo']) ?>">
-                <?php endif; ?>
-                <h4><?= htmlspecialchars($sec['titulo']) ?></h4>
-                <p><?= htmlspecialchars(mb_substr($sec['descripcion'] ?: strip_tags($sec['contenido']), 0, 100)) ?>...</p>
-              </article>
-            <?php endforeach; ?>
-          </div>
-        </div>
-
-        <aside class="news-sidebar">
-          <article class="news-side-card anim-card" style="--delay: 0.1s">
-            <h4>Accesos rápidos</h4>
-            <ul class="info-list">
-              <li><a href="periodicos.php">Archivo de periódicos</a></li>
-              <li><a href="secciones-periodico.php">Todas las secciones</a></li>
-              <li><a href="contacto.php">Contacto institucional</a></li>
-            </ul>
-          </article>
-          <article class="news-side-card anim-card" style="--delay: 0.15s">
-            <h4>Canales institucionales</h4>
-            <div class="panel-tags">
-              <span>Cuadro de honor</span>
-              <span>Egresados</span>
-              <span>PQRS</span>
-              <span>Convivencia</span>
-            </div>
-          </article>
-        </aside>
-      </div>
-    </section>
 
     <section class="about-project" aria-labelledby="about-project-title">
       <div class="section-header">
@@ -279,9 +176,106 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
       </div>
     </section>
 
+    <section class="news-layout-section" id="secciones" aria-labelledby="secciones-title">
+      <div class="section-header">
+        <h2 id="secciones-title">Secciones destacadas del periódico</h2>
+        <p>Portada editorial en formato de bloques para una lectura rápida y visual.</p>
+      </div>
+      <div class="news-layout">
+        <div class="news-main">
+          <?php if (!empty($secciones_array)): ?>
+            <?php $principal = $secciones_array[0]; ?>
+            <article class="news-feature anim-card" style="--delay: 0.05s">
+              <?php if (portada_src($principal['imagen'])): ?>
+                <div class="news-media">
+                  <img src="<?= htmlspecialchars(portada_src($principal['imagen'])) ?>" alt="Sección <?= htmlspecialchars($principal['titulo']) ?>">
+                </div>
+              <?php endif; ?>
+              <div class="news-copy">
+                <p class="periodico-kicker">Sección principal</p>
+                <h3><?= htmlspecialchars($principal['titulo']) ?></h3>
+                <p><?= htmlspecialchars($principal['descripcion'] ?: mb_substr(strip_tags($principal['contenido']), 0, 180) . '...') ?></p>
+                <a class="btn-primary" href="secciones-periodico.php">Leer sección</a>
+              </div>
+            </article>
+          <?php else: ?>
+            <article class="news-feature anim-card"><p>No hay secciones creadas aún.</p></article>
+          <?php endif; ?>
+
+          <div class="news-subgrid">
+            <?php foreach (array_slice($secciones_array, 1, 3) as $i => $sec): ?>
+              <article class="news-tile anim-card" style="--delay: <?= number_format(0.1 + ($i * 0.05), 2) ?>s">
+                <?php if (portada_src($sec['imagen'])): ?>
+                  <img src="<?= htmlspecialchars(portada_src($sec['imagen'])) ?>" alt="<?= htmlspecialchars($sec['titulo']) ?>">
+                <?php endif; ?>
+                <h4><?= htmlspecialchars($sec['titulo']) ?></h4>
+                <p><?= htmlspecialchars(mb_substr($sec['descripcion'] ?: strip_tags($sec['contenido']), 0, 100)) ?>...</p>
+              </article>
+            <?php endforeach; ?>
+          </div>
+        </div>
+
+        <aside class="news-sidebar">
+          <article class="news-side-card anim-card" style="--delay: 0.1s">
+            <h4>Accesos rápidos</h4>
+            <ul class="info-list">
+              <li><a href="periodicos.php">Archivo de periódicos</a></li>
+              <li><a href="secciones-periodico.php">Todas las secciones</a></li>
+              <li><a href="contacto.php">Contacto institucional</a></li>
+            </ul>
+          </article>
+          <article class="news-side-card anim-card" style="--delay: 0.15s">
+            <h4>Canales institucionales</h4>
+            <div class="panel-tags">
+              <span>Cuadro de honor</span>
+              <span>Egresados</span>
+              <span>PQRS</span>
+              <span>Convivencia</span>
+            </div>
+          </article>
+        </aside>
+      </div>
+    </section>
 
 
+    <section class="honor-cta" aria-labelledby="honor-cta-title">
+      <div class="honor-cta-inner anim-card" style="--delay: 0.12s">
+        <div>
+          <p class="hero-kicker">Reconocimiento institucional</p>
+          <h2 id="honor-cta-title">¡Celebremos juntos el talento Belenista!</h2>
+          <p>Descubre a nuestros estudiantes destacados, sus logros académicos y el esfuerzo que inspira a toda la comunidad educativa. Ingresa ahora al Cuadro de Honor y conoce las historias que nos llenan de orgullo.</p>
+        </div>
+        <a class="btn-primary" href="https://www.webcolegios.com/cuadro_honor.php?cod_sede=02&idcolegio=8" target="_blank" rel="noreferrer noopener">Ver Cuadro de Honor</a>
+      </div>
+    </section>
 
+    <section class="periodicos-section" id="periodicos" aria-labelledby="periodicos-title">
+      <div class="section-header">
+        <h2 id="periodicos-title">Último periódico publicado</h2>
+        <p>Acceso rápido a la edición más reciente de ECO BELÉN.</p>
+      </div>
+
+      <div class="periodicos-ultima">
+        <?php
+        if (!empty($periodicos_array)) {
+            $ultimo = $periodicos_array[0];
+            echo "<article class='periodico-hero anim-card' style='--delay: 0.1s'>
+                    <div>
+                      <p class='periodico-kicker'>Última edición</p>
+                      <h3>{$ultimo['titulo']}</h3>
+                      <p>Fecha: {$ultimo['publicado_en']} · Dir: {$ultimo['director']}</p>
+                    </div>
+                    <div class='periodico-actions'>
+                      <a href='view.php?id={$ultimo['id']}' class='btn-primary'>Lectura en línea</a>
+                      <a href='periodicos.php' class='btn-outline'>Ver todos</a>
+                    </div>
+                  </article>";
+        } else {
+            echo "<p>No hay periódicos disponibles aún.</p>";
+        }
+        ?>
+      </div>
+    </section>
   </main>
 
   <footer class="footer" id="contacto">
