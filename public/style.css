@@ -121,6 +121,9 @@ img {
 .brand-text {
     display: grid;
     gap: 4px;
+    flex: 1;
+    min-width: 260px;
+    text-align: center;
 }
 
 .brand-name {
@@ -1387,6 +1390,11 @@ img {
 
     .brand-name {
         font-size: 0.9rem;
+    }
+
+    .brand-text {
+        width: 100%;
+        min-width: 0;
     }
 
     .brand-sub {
