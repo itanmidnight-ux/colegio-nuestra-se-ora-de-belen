@@ -55,14 +55,14 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
     <div class="header-inner">
       <div class="header-brand-row">
         <a class="header-logo-badge" href="index.php" aria-label="Ir al inicio con ECO Belén">
-          <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
+          <img src="logo-ecobelen.jpg" alt="Logo ECO Belén" width="62" height="62" loading="eager" decoding="async">
         </a>
         <div class="brand-text">
           <span class="brand-name">Institución Educativa Nuestra Señora de Belén</span>
           <span class="brand-sub">ECO BELÉN · Comunidad educativa y cultural</span>
         </div>
         <a class="header-logo-badge" href="index.php" aria-label="Ir al inicio con el escudo institucional">
-          <img src="escudo.jpeg" alt="Escudo Institucional">
+          <img src="escudo.jpeg" alt="Escudo Institucional" width="62" height="62" loading="eager" decoding="async">
         </a>
       </div>
       <nav class="main-nav">
