@@ -975,29 +975,8 @@ select:focus-visible {
   margin-bottom: 12px;
 }
 
-
 .visitas-chart-card {
   background: #f8fafd;
-  border: 1px solid rgba(0, 72, 132, 0.16);
-  border-radius: 12px;
-  padding: 12px;
-  overflow: hidden;
-}
-
-.visitas-chart-body {
-  position: relative;
-  width: 100%;
-  height: calc(100% - 34px);
-  min-height: 150px;
-}
-
-.visitas-chart-body-large {
-  height: 185px;
-}
-
-.visitas-chart-body canvas {
-  width: 100% !important;
-  height: 100% !important;
 }
 
 .visitas-chart-card h3 {
@@ -1013,11 +992,13 @@ select:focus-visible {
 }
 
 .visitas-chart-small {
-  min-height: 260px;
+  height: 220px;
+  min-height: 220px;
 }
 
 .visitas-chart-medium {
-  min-height: 420px;
+  height: 340px;
+  min-height: 340px;
 }
 
 .visitas-detail-card {
@@ -1041,23 +1022,4 @@ select:focus-visible {
   .visitas-grid-compact {
     grid-template-columns: 1fr;
   }
-}
-
-.visitas-week-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-}
-
-.visitas-week-table th,
-.visitas-week-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid rgba(0, 72, 132, 0.12);
-  text-align: left;
-}
-
-.visitas-week-table th {
-  color: var(--admin-primary);
-  font-size: 0.8rem;
-  text-transform: uppercase;
 }

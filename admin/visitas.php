@@ -31,7 +31,7 @@ if (!isset($_SESSION['user_id'])) {
   <aside class="side-panel survey-side-panel">
     <div>
       <h3>Resumen general</h3>
-      <p class="survey-side-copy">Datos reales por día en zona horaria Colombia (America/Bogota).</p>
+      <p class="survey-side-copy">Vista rápida de comportamiento, secciones destacadas y actividad diaria del sitio público.</p>
     </div>
     <div id="visitSummary" class="card visitas-summary-card">Cargando...</div>
   </aside>
@@ -44,18 +44,18 @@ if (!isset($_SESSION['user_id'])) {
     <div class="visitas-grid-compact">
       <article class="survey-chart-card visitas-chart-card visitas-chart-small">
         <h3>Sesiones por día (sitio público)</h3>
-        <div class="visitas-chart-body"><canvas id="trendVisitsChart"></canvas></div>
+        <canvas id="trendVisitsChart"></canvas>
       </article>
       <article class="survey-chart-card visitas-chart-card visitas-chart-small">
         <h3>Canales por sección (acumulado)</h3>
-        <div class="visitas-chart-body"><canvas id="sectionsShareChart"></canvas></div>
+        <canvas id="sectionsShareChart"></canvas>
       </article>
     </div>
 
     <article class="survey-chart-card visitas-chart-card visitas-chart-medium">
       <h3>Visitas brutas semanales del sitio público</h3>
-      <p class="visitas-chart-copy">Semana actual (lunes a domingo) con fechas exactas DD/MM/AA y número bruto real de visitas.</p>
-      <div class="visitas-chart-body visitas-chart-body-large"><canvas id="rawVisitsChart"></canvas></div>
+      <p class="visitas-chart-copy">Incluye todos los días de la semana (lunes a domingo), mostrando fecha exacta y total de dispositivos únicos detectados.</p>
+      <canvas id="rawVisitsChart"></canvas>
       <div id="rawDetail" class="card survey-stats-card visitas-detail-card"></div>
     </article>
   </section>
@@ -76,15 +76,32 @@ function formatFullDate(isoDate) {
   return `${weekday}, ${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
 }
 
-function formatDateShortYear(isoDate) {
-  const [year, month, day] = isoDate.split('-').map(Number);
-  return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${String(year).slice(-2)}`;
-}
-
 function formatShortDate(isoDate) {
   const [year, month, day] = isoDate.split('-').map(Number);
   const localDate = new Date(year, month - 1, day);
   return `${WEEKDAY_SHORT[localDate.getDay()]} ${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}`;
+}
+
+function getWeekRangeFromDate(dateIso) {
+  const [year, month, day] = dateIso.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  const dayOfWeek = date.getDay();
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+  const monday = new Date(date);
+  monday.setDate(date.getDate() + mondayOffset);
+
+  const week = [];
+  for (let i = 0; i < 7; i += 1) {
+    const current = new Date(monday);
+    current.setDate(monday.getDate() + i);
+    const y = current.getFullYear();
+    const m = String(current.getMonth() + 1).padStart(2, '0');
+    const d = String(current.getDate()).padStart(2, '0');
+    week.push(`${y}-${m}-${d}`);
+  }
+
+  return week;
 }
 
 function buildKpiCards(summary) {
@@ -101,7 +118,7 @@ async function loadSummary() {
   const [summaryRes, dailyRes, rawRes] = await Promise.all([
     fetch('visitas_api.php?action=summary'),
     fetch('visitas_api.php?action=daily_carousel'),
-    fetch('visitas_api.php?action=raw_weekly'),
+    fetch('visitas_api.php?action=raw_devices_carousel'),
   ]);
 
   const [summaryJson, dailyJson, rawJson] = await Promise.all([
@@ -163,7 +180,9 @@ function renderTrend(days) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+      },
       scales: {
         y: { beginAtZero: true, ticks: { precision: 0 } },
         x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 } },
@@ -210,8 +229,12 @@ function renderRawWeekly(rawDays) {
     return;
   }
 
-  const labels = rawDays.map(item => formatShortDate(item.fecha));
-  const values = rawDays.map(item => Number(item.visitas_brutas));
+  const mapByDate = new Map(rawDays.map(item => [item.fecha, Number(item.dispositivos_brutos)]));
+  const lastDate = rawDays[rawDays.length - 1].fecha;
+  const fullWeek = getWeekRangeFromDate(lastDate);
+
+  const labels = fullWeek.map(formatShortDate);
+  const values = fullWeek.map(date => mapByDate.get(date) || 0);
 
   rawChart?.destroy();
   rawChart = new Chart(document.getElementById('rawVisitsChart'), {
@@ -224,7 +247,7 @@ function renderRawWeekly(rawDays) {
         borderColor: '#8cc5e9',
         backgroundColor: 'rgba(140, 197, 233, 0.45)',
         fill: true,
-        tension: 0.35,
+        tension: 0.4,
         pointRadius: 4,
         pointBackgroundColor: '#4e9dd6',
       }]
@@ -232,7 +255,9 @@ function renderRawWeekly(rawDays) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: true } },
+      plugins: {
+        legend: { display: true },
+      },
       scales: {
         y: { beginAtZero: true, ticks: { precision: 0 } },
         x: { ticks: { maxRotation: 0, autoSkip: false } },
@@ -240,17 +265,8 @@ function renderRawWeekly(rawDays) {
     }
   });
 
-  detail.innerHTML = `
-    <h3>Detalle semanal exacto</h3>
-    <table class="visitas-week-table">
-      <thead>
-        <tr><th>Fecha (DD/MM/AA)</th><th>Visitas brutas</th></tr>
-      </thead>
-      <tbody>
-        ${rawDays.map(item => `<tr><td>${formatDateShortYear(item.fecha)}</td><td>${Number(item.visitas_brutas).toLocaleString('es-CO')}</td></tr>`).join('')}
-      </tbody>
-    </table>
-  `;
+  detail.innerHTML = '<h3>Detalle semanal exacto</h3>' + fullWeek.map((date, index) =>
+    `<p><strong>${formatFullDate(date)}</strong>: ${values[index]} visita(s) bruta(s)</p>`).join('');
 }
 
 loadSummary();

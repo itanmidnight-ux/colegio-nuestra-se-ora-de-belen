@@ -60,9 +60,25 @@ if ($action === 'daily_carousel') {
     $resDias = $conn->query("SELECT fecha, total_visitas FROM visitas_totales_diarias ORDER BY fecha ASC");
     if ($resDias) {
         while ($dia = $resDias->fetch_assoc()) {
+            $fecha = $dia['fecha'];
+            $stmt = $conn->prepare("SELECT seccion, visitas FROM visitas_secciones_diarias WHERE fecha = ? ORDER BY visitas DESC, seccion ASC");
+            $stmt->bind_param('s', $fecha);
+            $stmt->execute();
+            $resSec = $stmt->get_result();
+
+            $secciones = [];
+            while ($s = $resSec->fetch_assoc()) {
+                $secciones[] = [
+                    'seccion' => $s['seccion'],
+                    'visitas' => (int)$s['visitas'],
+                ];
+            }
+            $stmt->close();
+
             $items[] = [
-                'fecha' => $dia['fecha'],
+                'fecha' => $fecha,
                 'total_visitas' => (int)$dia['total_visitas'],
+                'secciones' => $secciones,
             ];
         }
     }
@@ -71,38 +87,17 @@ if ($action === 'daily_carousel') {
     exit;
 }
 
-if ($action === 'raw_weekly') {
-    $today = getVisitsToday();
-    $date = new DateTimeImmutable($today, new DateTimeZone(VISITS_TIMEZONE));
-    $dayOfWeek = (int)$date->format('N');
-    $monday = $date->modify('-' . ($dayOfWeek - 1) . ' days');
 
-    $weekDates = [];
-    for ($i = 0; $i < 7; $i += 1) {
-        $weekDates[] = $monday->modify('+' . $i . ' days')->format('Y-m-d');
-    }
-
-    $stmt = $conn->prepare("SELECT fecha, total_visitas FROM visitas_totales_diarias WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC");
-    $start = $weekDates[0];
-    $end = $weekDates[6];
-    $mapByDate = [];
-
-    if ($stmt) {
-        $stmt->bind_param('ss', $start, $end);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-            $mapByDate[$row['fecha']] = (int)$row['total_visitas'];
-        }
-        $stmt->close();
-    }
-
+if ($action === 'raw_devices_carousel') {
     $items = [];
-    foreach ($weekDates as $weekDate) {
-        $items[] = [
-            'fecha' => $weekDate,
-            'visitas_brutas' => $mapByDate[$weekDate] ?? 0,
-        ];
+    $resDias = $conn->query("SELECT fecha, COUNT(*) AS dispositivos_brutos FROM visitas_dispositivos_diarias GROUP BY fecha ORDER BY fecha ASC");
+    if ($resDias) {
+        while ($dia = $resDias->fetch_assoc()) {
+            $items[] = [
+                'fecha' => $dia['fecha'],
+                'dispositivos_brutos' => (int)$dia['dispositivos_brutos'],
+            ];
+        }
     }
 
     echo json_encode(['status' => 'ok', 'items' => $items]);

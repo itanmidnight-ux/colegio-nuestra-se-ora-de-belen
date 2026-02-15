@@ -1,13 +1,5 @@
 <?php
 
-const VISITS_TIMEZONE = 'America/Bogota';
-
-function getVisitsToday(): string
-{
-    $tz = new DateTimeZone(VISITS_TIMEZONE);
-    return (new DateTimeImmutable('now', $tz))->format('Y-m-d');
-}
-
 function ensureVisitsTables(mysqli $conn): void
 {
     $conn->query("CREATE TABLE IF NOT EXISTS visitas_secciones_diarias (
@@ -48,7 +40,7 @@ function registerSectionVisit(mysqli $conn, string $section): void
         $section = 'general';
     }
 
-    $today = getVisitsToday();
+    $today = date('Y-m-d');
 
     $stmtSection = $conn->prepare("INSERT INTO visitas_secciones_diarias (seccion, fecha, visitas)
         VALUES (?, ?, 1)
