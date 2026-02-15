@@ -88,10 +88,6 @@ $last_mod = date('j', $ts) . " de " . $months[(int)date('n', $ts) - 1] . " de " 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="corner-logos" href="index.php" aria-label="Ir al inicio">
-    <img src="escudo.jpeg" alt="Escudo Institucional">
-    <img src="logo-ecobelen.jpg" alt="Logo ECO Belén">
-  </a>
 
   <header class="public-header" id="inicio">
     <div class="top-bar">Institución Educativa Nuestra Señora de Belén · Cúcuta</div>
