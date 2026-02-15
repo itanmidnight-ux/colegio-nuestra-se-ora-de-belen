@@ -108,6 +108,14 @@ img {
     min-width: 260px;
 }
 
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 260px;
+}
+
 .header-logos {
     display: flex;
     gap: 10px;
@@ -131,7 +139,7 @@ img {
     gap: 4px;
     flex: 1;
     min-width: 0;
-    text-align: center;
+    text-align: left;
 }
 
 .brand-name {
@@ -1388,6 +1396,13 @@ img {
         gap: 10px;
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .header-brand {
+        width: 100%;
+        min-width: 0;
+        justify-content: space-between;
+        gap: 10px;
     }
 
     .header-brand {
