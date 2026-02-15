@@ -160,7 +160,7 @@ img {
     gap: 4px;
     flex: 1;
     min-width: 0;
-    text-align: left;
+    text-align: center;
 }
 
 .brand-name {
@@ -1447,7 +1447,7 @@ img {
     .brand-text {
         width: 100%;
         min-width: 0;
-        text-align: left;
+        text-align: center;
     }
 
     .brand-sub {
