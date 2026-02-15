@@ -94,10 +94,18 @@ img {
     margin: 0 auto;
     padding: 14px 20px 18px;
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+}
+
+.header-brand {
+    display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    flex-wrap: wrap;
+    gap: 14px;
+    width: 100%;
+    min-width: 260px;
 }
 
 .header-logos {
@@ -122,7 +130,7 @@ img {
     display: grid;
     gap: 4px;
     flex: 1;
-    min-width: 260px;
+    min-width: 0;
     text-align: center;
 }
 
@@ -141,6 +149,7 @@ img {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+    justify-content: center;
     font-weight: 600;
 }
 
@@ -215,7 +224,7 @@ img {
     box-shadow: var(--shadow-medium);
     display: grid;
     gap: 16px;
-    text-align: left;
+    text-align: center;
     border: 1px solid rgba(0, 72, 132, 0.08);
 }
 
@@ -1378,7 +1387,14 @@ img {
         padding: 10px 12px;
         gap: 10px;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+    }
+
+    .header-brand {
+        width: 100%;
+        min-width: 0;
+        justify-content: space-between;
+        gap: 10px;
     }
 
     .header-logos img {
@@ -1395,6 +1411,7 @@ img {
     .brand-text {
         width: 100%;
         min-width: 0;
+        text-align: left;
     }
 
     .brand-sub {
@@ -1404,6 +1421,7 @@ img {
     .main-nav {
         width: 100%;
         gap: 10px;
+        justify-content: flex-start;
         font-size: 0.86rem;
     }
 
@@ -1676,7 +1694,7 @@ img {
     padding: 10px 12px;
     background: #f7f9ff;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
 }
 
 .survey-option:hover {
